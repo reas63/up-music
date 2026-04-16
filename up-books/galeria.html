@@ -14,8 +14,8 @@
   z-index: 9999;
 }
 
-/* ✨ BOTÃO DENTRO DO LEITOR TAMBÉM */
-#google_translate_element_leitor {
+/* ✨ BOTÃO DENTRO DO LEITOR - MESMO ESTILO */
+#tradutor_leitor {
   text-align: right;
   margin-bottom: 15px;
 }
@@ -141,7 +141,6 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 </head>
 <body>
 
-<!-- BOTÃO FORA DA TELA -->
 <div id="google_translate_element"></div>
 
 <div class="card">
@@ -157,8 +156,10 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <div id="paginaLeitura" class="pagina-leitura">
   <div class="conteudo-leitura">
     
-    <!-- ✅ BOTÃO DE TRADUZIR DENTRO DO LEITOR -->
-    <div id="google_translate_element_leitor"></div>
+    <!-- ✅ BOTÃO DE TRADUZIR NO TOPO DO LEITOR -->
+    <div id="tradutor_leitor">
+      <div id="google_translate_element2"></div>
+    </div>
 
     <button class="btn-fechar" onclick="fecharLeitura()">✖️ FECHAR</button>
     <h1 id="tituloLivro" style="color:#FFD700; text-align:center;"></h1>
@@ -169,27 +170,29 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 </div>
 
 <script>
-// ✅ INICIALIZA O TRADUTOR NOS DOIS LUGARES
+// ✅ INICIALIZA OS DOIS BOTÕES
 function googleTranslateElementInit() {
-  // Botão principal
+  // Botão 1 - Fora
   new google.translate.TranslateElement({
     pageLanguage: 'pt',
     layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
     autoDisplay: true
   }, 'google_translate_element');
 
-  // Botão dentro do leitor
-  new google.translate.TranslateElement({
-    pageLanguage: 'pt',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    autoDisplay: true
-  }, 'google_translate_element_leitor');
+  // Botão 2 - Dentro do Leitor
+  setTimeout(function() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'pt',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+      autoDisplay: true
+    }, 'google_translate_element2');
+  }, 500);
 }
 
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-// ✅ CARREGA A LISTA DE LIVROS
+// ✅ CARREGA A LISTA
 function exibirLivros(){
   const dados = localStorage.getItem("meus_livros");
   const container = document.getElementById("lista-livros");
@@ -221,7 +224,7 @@ function exibirLivros(){
   }
 }
 
-// ✅ ABRE O LIVRO PARA LER
+// ✅ ABRE O LIVRO
 function abrirLeitura(livro){
   document.getElementById("tituloLivro").innerText = livro.titulo || "Livro";
   document.getElementById("autorLivro").innerText = "Por " + (livro.autor || 'Desconhecido');
