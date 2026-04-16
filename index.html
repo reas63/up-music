@@ -6,38 +6,55 @@
 <title>Login - UP MUSIC</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial}
-.login-card{background:rgba(0,0,0,0.7);padding:30px;border-radius:20px;border:2px solid #FFDC00;width:90%;max-width:400px;text-align:center;color:white}
-h1{color:#FFDC00;margin-bottom:20px;font-size:2.2rem}
-input{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;font-size:1rem;background:#222;color:white;border:1px solid #444}
-button{width:100%;padding:15px;background:linear-gradient(45deg,#0074D9,#00c851);color:white;border:none;border-radius:10px;font-size:1.2rem;font-weight:bold;cursor:pointer;margin-top:15px}
-button:hover{opacity:0.9}
-.erro{color:#ff4444;margin-top:10px;display:none}
+body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white;display:flex;align-items:center;justify-content:center}
+.card{background:rgba(0,0,0,0.7);border:2px solid #FFDC00;border-radius:20px;padding:30px;margin:15px auto;width:100%;max-width:500px;text-align:center}
+h2{color:#FFDC00;margin-bottom:30px;font-size:2.2rem}
+p{margin-bottom:25px;font-size:1.1rem;opacity:0.9}
+.btn{padding:18px 30px;border:none;border-radius:12px;font-weight:bold;cursor:pointer;margin:10px auto;font-size:1.2rem;width:90%;max-width:350px}
+.btn-admin{background:linear-gradient(45deg,#FF4136,#FF851B);color:white}
+.btn-visita{background:linear-gradient(45deg,#0074D9,#39CCCC);color:white}
+.senha-area{margin:20px 0;display:none}
+input{width:90%;padding:15px;font-size:1.2rem;border-radius:10px;border:none;text-align:center;margin-bottom:15px}
 </style>
 </head>
 <body>
-<div class="login-card">
-  <h1>🎵 UP MUSIC</h1>
-  <p>Digite a senha para entrar</p>
-  <input type="password" id="senha" placeholder="🔑 Senha de acesso">
-  <button onclick="entrar()">ENTRAR 🚪</button>
-  <div class="erro" id="msgErro">❌ Senha incorreta! Tente novamente.</div>
+
+<div class="card">
+  <h2>🎵 UP MUSIC</h2>
+  <p>Escolha como deseja entrar:</p>
+
+  <button class="btn btn-admin" onclick="mostrarSenha()">🔐 ENTRAR COMO ADMINISTRADOR</button>
+
+  <div class="senha-area" id="areaSenha">
+    <input type="password" id="senha" placeholder="Digite a senha de admin">
+    <button class="btn btn-admin" onclick="entrarAdmin()">✅ CONFIRMAR</button>
+  </div>
+
+  <hr style="border:1px solid #555;margin:25px 0">
+
+  <button class="btn btn-visita" onclick="entrarVisitante()">👤 ENTRAR COMO VISITANTE</button>
 </div>
 
 <script>
-function entrar(){
-  const senhaCorreta = "S46c!B!poW-5";
-  const senhaDigitada = document.getElementById("senha").value;
-  const msgErro = document.getElementById("msgErro");
+function mostrarSenha(){
+  document.getElementById("areaSenha").style.display = "block";
+}
 
-  if(senhaDigitada === senhaCorreta){
+function entrarAdmin(){
+  const senha = document.getElementById("senha").value;
+  if(senha === "1234"){ // COLOQUE A SENHA QUE VOCÊ QUISER
     localStorage.setItem("upmusic_user", "admin");
-    window.location.href = "principal.html";
-  }else{
-    msgErro.style.display = "block";
-    document.getElementById("senha").value = "";
+    window.location.href="principal.html";
+  } else {
+    alert("❌ Senha incorreta!");
   }
 }
+
+function entrarVisitante(){
+  localStorage.setItem("upmusic_user", "visitante");
+  window.location.href="principal.html";
+}
 </script>
+
 </body>
 </html>
