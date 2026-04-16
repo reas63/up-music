@@ -71,7 +71,7 @@ function deletarMusica(id){
   localStorage.setItem("musicas_salvas", JSON.stringify(musicas));
   
   alert("✅ Música deletada!");
-  carregarTudo(); // Atualiza a lista
+  carregarTudo();
 }
 
 window.onload = carregarTudo;

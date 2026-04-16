@@ -15,7 +15,7 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 .btn-roxo{background:linear-gradient(45deg,#6225E6,#BA68C8);color:white}
 .btn-copia{background:#111;color:#0f0;border:1px solid #0f0}
 .btn-selecionar{width:100%;padding:25px;font-size:1.5rem;background:linear-gradient(90deg,#0074D9,#00c851);color:white;border:none;border-radius:10px;margin:15px 0}
-.status-text{text-align:center;margin:10px 0;font-size:1rem}
+.status-text{text-align:center;margin:10px 0;font-size:1rem;min-height:20px}
 </style>
 </head>
 <body>
@@ -29,7 +29,8 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
   </div>
 </div>
 
-<div class="card" id="areaUpload">
+<div class="card">
+  <h2>📤 UPLOAD DE ÁUDIO</h2>
   <label class="btn-selecionar">
     🎤 CLIQUE AQUI PARA SELECIONAR
     <input type="file" id="arquivo" accept="audio/*" style="display:none" onchange="escolher(this)">
