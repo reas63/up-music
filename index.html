@@ -3,82 +3,40 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UP MUSIC</title>
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag(js, new Date());
-  gtag(config, G-B9C3PNT1X7);
-</script>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
+<title>Login - UP MUSIC</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white}
-.card{background:rgba(0,0,0,0.5);border:2px solid #FFDC00;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
-h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1rem}
-.btn-verde{background:#2ECC40;color:black}
-.form-group{margin:15px 0}
-label{display:block;margin-bottom:5px}
-input, select{width:100%;padding:10px;border-radius:8px;border:none;background:#222;color:white;font-size:1rem}
-#google_translate_element{text-align:center;margin:10px 0}
-.goog-te-gadget-simple{background:white !important;border:1px solid #ccc !important;border-radius:20px !important;padding:6px 15px !important;display:inline-flex !important;align-items:center !important}
-.goog-te-gadget-icon{background:url(https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/translate/default/24px.svg) center center no-repeat !important;width:24px !important;height:24px !important;margin-right:8px !important}
-.goog-te-menu-value{color:black !important;font-size:14px !important}
+body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial}
+.login-card{background:rgba(0,0,0,0.7);padding:30px;border-radius:20px;border:2px solid #FFDC00;width:90%;max-width:400px;text-align:center;color:white}
+h1{color:#FFDC00;margin-bottom:20px;font-size:2.2rem}
+input{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;font-size:1rem;background:#222;color:white;border:1px solid #444}
+button{width:100%;padding:15px;background:linear-gradient(45deg,#0074D9,#00c851);color:white;border:none;border-radius:10px;font-size:1.2rem;font-weight:bold;cursor:pointer;margin-top:15px}
+button:hover{opacity:0.9}
+.erro{color:#ff4444;margin-top:10px;display:none}
 </style>
 </head>
 <body>
-
-<div id="google_translate_element"></div>
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: pt, includedLanguages: en,es,fr,de,it,ru,zh-CN,ja,ko, layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, google_translate_element);
-}
-</script>
-
-<div class="card">
-  <h2>🎵 UP MUSIC</h2>
-  <p style="text-align:center;margin-bottom:20px">Exposição de Áudios e Músicas</p>
-
-  <div class="form-group">
-    <label>Você é:</label>
-    <select id="tipo" onchange="mostrarSenha()">
-      <option value="visitante">Visitante</option>
-      <option value="admin">Administrador</option>
-    </select>
-  </div>
-
-  <div class="form-group" id="campo-senha" style="display:none;">
-    <label>Digite a senha:</label>
-    <input type="password" id="senha" placeholder="••••••••">
-  </div>
-
-  <div class="botoes-centro">
-    <button class="btn btn-verde" onclick="entrar()">ENTRAR 🚪</button>
-  </div>
+<div class="login-card">
+  <h1>🎵 UP MUSIC</h1>
+  <p>Digite a senha para entrar</p>
+  <input type="password" id="senha" placeholder="🔑 Senha de acesso">
+  <button onclick="entrar()">ENTRAR 🚪</button>
+  <div class="erro" id="msgErro">❌ Senha incorreta! Tente novamente.</div>
 </div>
 
 <script>
-function mostrarSenha(){
-  const tipo = document.getElementById(tipo).value;
-  document.getElementById(campo-senha).style.display = (tipo === "admin") ? "block" : "none";
-}
 function entrar(){
-  const tipo = document.getElementById(tipo).value;
-  const senha = document.getElementById(senha).value;
-  const SENHA_CORRETA = "S46c!B!poW-5";
+  const senhaCorreta = "S46c!B!poW-5";
+  const senhaDigitada = document.getElementById("senha").value;
+  const msgErro = document.getElementById("msgErro");
 
-  if(tipo === "admin" && senha !== SENHA_CORRETA){
-    alert("❌ SENHA INCORRETA!");
-    return;
+  if(senhaDigitada === senhaCorreta){
+    localStorage.setItem("upmusic_user", "admin");
+    window.location.href = "principal.html";
+  }else{
+    msgErro.style.display = "block";
+    document.getElementById("senha").value = "";
   }
-  localStorage.setItem("upmusic_user", tipo);
-  window.location.href = "principal.html";
 }
 </script>
 </body>
