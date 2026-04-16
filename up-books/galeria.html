@@ -6,7 +6,7 @@
 <title>Meus Livros - UP BOOKS</title>
 
 <style>
-/* ✨ BOTÃO TRADUTOR IGUAL A FOTO */
+/* ✨ BOTÃO TRADUTOR FORA */
 #google_translate_element {
   position: fixed;
   top: 10px;
@@ -14,8 +14,8 @@
   z-index: 9999;
 }
 
-/* ✨ ESTILO DO BOTÃO DENTRO DO LEITOR */
-#google_translate_element2 .goog-te-gadget-simple {
+/* ✨ BOTÃO PERSONALIZADO DENTRO DO LEITOR */
+.btn-traduzir {
   background-color: #ffffff !important;
   border: 1px solid #dddddd !important;
   border-radius: 25px !important;
@@ -26,14 +26,14 @@
   display: inline-flex !important;
   align-items: center !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  cursor: pointer !important;
   margin-left: 10px !important;
 }
 
-.goog-te-gadget-icon {
-  display: inline-block !important;
-  width: 24px !important;
-  height: 24px !important;
-  margin-right: 8px !important;
+.btn-traduzir img {
+  width: 24px;
+  height: 24px;
+  margin-right: 8px;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -93,7 +93,7 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
   border: 2px solid #FFD700;
 }
 
-/* ✅ LINHA COM BOTÃO FECHAR E TRADUTOR LADO A LADO */
+/* ✅ LINHA COM BOTÕES */
 .barra-botoes {
   display: flex;
   justify-content: flex-end;
@@ -157,14 +157,19 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 
 <div id="lista-livros" class="card"></div>
 
-<!-- ✨ PÁGINA DE LEITURA ESCONDIDA -->
+<!-- ✨ PÁGINA DE LEITURA -->
 <div id="paginaLeitura" class="pagina-leitura">
   <div class="conteudo-leitura">
     
     <!-- ✅ BOTÕES LADO A LADO -->
     <div class="barra-botoes">
       <button class="btn-fechar" onclick="fecharLeitura()">✖️ FECHAR</button>
-      <div id="google_translate_element2"></div>
+      
+      <!-- ✨ BOTÃO PERSONALIZADO DE TRADUÇÃO -->
+      <button class="btn-traduzir" onclick="abrirTraducao()">
+        <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" alt="Traduzir">
+        Traduzir
+      </button>
     </div>
 
     <h1 id="tituloLivro" style="color:#FFD700; text-align:center;"></h1>
@@ -175,21 +180,20 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 </div>
 
 <script>
-// ✅ INICIALIZA OS DOIS BOTÕES
+// ✅ INICIALIZA O TRADUTOR
 function googleTranslateElementInit() {
-  // Botão principal fora
   new google.translate.TranslateElement({
     pageLanguage: 'pt',
     layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
     autoDisplay: true
   }, 'google_translate_element');
+}
 
-  // Botão dentro do leitor
-  new google.translate.TranslateElement({
-    pageLanguage: 'pt',
-    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-    autoDisplay: true
-  }, 'google_translate_element2');
+// ✅ FUNÇÃO PARA ABRIR O MENU DE IDIOMAS QUANDO CLICAR NO BOTÃO
+function abrirTraducao() {
+  // Simula o clique no widget original
+  const widget = document.querySelector('.goog-te-gadget-simple');
+  if (widget) widget.click();
 }
 
 const tipoUsuario = localStorage.getItem("upbooks_user");
