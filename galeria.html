@@ -52,6 +52,8 @@ function googleTranslateElementInit() {
 <script>
 function carregarAudios(){
   const listaAudios = document.getElementById("listaAudios");
+  
+  // ✅ VERIFICA SE TEM ALGO SALVO
   let audios = JSON.parse(localStorage.getItem("lista_audios") || "[]");
 
   if(audios.length == 0){
