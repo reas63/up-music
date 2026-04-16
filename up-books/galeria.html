@@ -22,7 +22,7 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <div class="card">
   <h2>📚 GALERIA DE LIVROS</h2>
   <div class="botoes-centro">
-    <a href="principal.html" class="btn btn-azul">🔙 VOLTAR</a>
+    <a href="./principal.html" class="btn btn-azul">🔙 VOLTAR</a>
   </div>
 </div>
 
@@ -81,7 +81,7 @@ function baixarEpub(titulo, autor, texto) {
     <dc:title>${titulo}</dc:title><dc:creator>${autor}</dc:creator><dc:language>pt</dc:language>
   </metadata>
   <manifest><item id="index" href="index.html" media-type="application/xhtml+xml"/></manifest>
-  <spine><itemref idref="index"/></spine>
+  <spine><itemref id="index"/></spine>
 </package>`);
 
   zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
