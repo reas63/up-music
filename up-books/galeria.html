@@ -14,12 +14,7 @@
   z-index: 9999;
 }
 
-/* ✨ BOTÃO DENTRO DO LEITOR - MESMO ESTILO */
-#tradutor_leitor {
-  text-align: right;
-  margin-bottom: 15px;
-}
-
+/* ✨ ESTILO DO BOTÃO DENTRO DO LEITOR */
 .goog-te-gadget-simple {
   background-color: #ffffff !important;
   border: 1px solid #dddddd !important;
@@ -31,6 +26,7 @@
   display: inline-flex !important;
   align-items: center !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
+  margin-left: 10px !important;
 }
 
 .goog-te-gadget-icon {
@@ -96,14 +92,15 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
   border-radius: 15px;
   border: 2px solid #FFD700;
 }
-.texto-livro {
-  line-height: 1.8;
-  font-size: 1.2rem;
-  color: #f0f0f0;
-  text-align: justify;
-  white-space: pre-wrap;
-  margin-top: 20px;
+
+/* ✅ LINHA COM BOTÃO FECHAR E TRADUTOR */
+.barra-botoes {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 20px;
 }
+
 .btn-fechar {
   background: #FF4136;
   color: white;
@@ -113,7 +110,15 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
   font-size: 1rem;
   cursor: pointer;
   font-weight: bold;
-  margin-bottom: 20px;
+}
+
+.texto-livro {
+  line-height: 1.8;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  text-align: justify;
+  white-space: pre-wrap;
+  margin-top: 20px;
 }
 .btn {
   padding: 12px 20px;
@@ -156,12 +161,12 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <div id="paginaLeitura" class="pagina-leitura">
   <div class="conteudo-leitura">
     
-    <!-- ✅ BOTÃO DE TRADUZIR NO TOPO DO LEITOR -->
-    <div id="tradutor_leitor">
+    <!-- ✅ LINHA COM OS DOIS BOTÕES LADO A LADO -->
+    <div class="barra-botoes">
+      <button class="btn-fechar" onclick="fecharLeitura()">✖️ FECHAR</button>
       <div id="google_translate_element2"></div>
     </div>
 
-    <button class="btn-fechar" onclick="fecharLeitura()">✖️ FECHAR</button>
     <h1 id="tituloLivro" style="color:#FFD700; text-align:center;"></h1>
     <h3 id="autorLivro" style="color:#aaa; text-align:center; margin-bottom:20px;"></h3>
     <hr style="border-color:#444;">
@@ -172,21 +177,19 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <script>
 // ✅ INICIALIZA OS DOIS BOTÕES
 function googleTranslateElementInit() {
-  // Botão 1 - Fora
+  // Botão principal fora
   new google.translate.TranslateElement({
     pageLanguage: 'pt',
     layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
     autoDisplay: true
   }, 'google_translate_element');
 
-  // Botão 2 - Dentro do Leitor
-  setTimeout(function() {
-    new google.translate.TranslateElement({
-      pageLanguage: 'pt',
-      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-      autoDisplay: true
-    }, 'google_translate_element2');
-  }, 500);
+  // Botão dentro do leitor
+  new google.translate.TranslateElement({
+    pageLanguage: 'pt',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: true
+  }, 'google_translate_element2');
 }
 
 const tipoUsuario = localStorage.getItem("upbooks_user");
