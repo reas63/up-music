@@ -11,19 +11,119 @@ function googleTranslateElementInit() {
   new google.translate.TranslateElement({pageLanguage: 'pt', layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT}, 'google_translate_element');
 }
 </script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <style>
+#google_translate_element {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+  background: white;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+.goog-te-gadget-icon {
+  display: inline-block !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 5px !important;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
-.texto-livro{background:#111;padding:15px;border-radius:10px;margin:15px 0;line-height:1.6;font-size:1.1rem;white-space:pre-wrap}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;width:100%;max-width:300px}
-.btn-verde{background:#2ECC40;color:white}
-.btn-azul{background:#0074D9;color:white}
-.btn-vermelho{background:#FF4136;color:white}
-.botoes-centro{text-align:center;margin-top:20px}
+
+/* ✨ ESTILO DA BARRINHA DO LIVRO */
+.livro-item {
+  background: linear-gradient(to right, #222, #444);
+  border: 2px solid #FFD700;
+  border-radius: 10px;
+  padding: 15px;
+  margin: 10px 0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.livro-item:hover {
+  background: #333;
+  transform: scale(1.02);
+}
+.livro-numero {
+  color: #FFD700;
+  font-weight: bold;
+  font-size: 1.2rem;
+  margin-right: 10px;
+}
+.livro-titulo {
+  color: white;
+  font-size: 1.1rem;
+}
+.autor {
+  color: #aaa;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* ✨ ESTILO DA PÁGINA DE LEITURA */
+.pagina-leitura {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #1a1a1a;
+  z-index: 99999;
+  overflow-y: auto;
+  padding: 20px;
+}
+.conteudo-leitura {
+  max-width: 800px;
+  margin: 0 auto;
+  background: #222;
+  padding: 30px;
+  border-radius: 15px;
+  border: 2px solid #FFD700;
+}
+.texto-livro {
+  line-height: 1.8;
+  font-size: 1.2rem;
+  color: #f0f0f0;
+  text-align: justify;
+  white-space: pre-wrap;
+  margin-top: 20px;
+}
+.btn-fechar {
+  background: #FF4136;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: bold;
+  margin-bottom: 20px;
+}
+.btn {
+  padding: 12px 20px;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  margin: 5px;
+  font-size: 1.1rem;
+  text-decoration: none;
+  display: inline-block;
+}
+.btn-azul {
+  background: #0074D9;
+  color: white;
+}
+.botoes-centro {
+  text-align: center;
+  margin-top: 20px;
+}
 </style>
 </head>
 <body>
@@ -37,9 +137,19 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
   </div>
 </div>
 
-<div id="lista-livros"></div>
+<div id="lista-livros" class="card"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<!-- ✨ PÁGINA DE LEITURA ESCONDIDA -->
+<div id="paginaLeitura" class="pagina-leitura">
+  <div class="conteudo-leitura">
+    <button class="btn-fechar" onclick="fecharLeitura()">✖️ FECHAR</button>
+    <h1 id="tituloLivro" style="color:#FFD700; text-align:center;"></h1>
+    <h3 id="autorLivro" style="color:#aaa; text-align:center; margin-bottom:20px;"></h3>
+    <hr style="border-color:#444;">
+    <div id="textoLivro" class="texto-livro"></div>
+  </div>
+</div>
+
 <script>
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
@@ -49,116 +159,38 @@ function exibirLivros(){
   const container = document.getElementById("lista-livros");
 
   if(!dados){
-    container.innerHTML = "<div class='card'><p style='text-align:center;'>Nenhum livro salvo ainda.</p></div>";
+    container.innerHTML = "<p style='text-align:center;'>Nenhum livro salvo ainda.</p>";
     return;
   }
 
   const livros = JSON.parse(dados);
   container.innerHTML = "";
 
-  livros.forEach(livro => {
+  livros.forEach((livro, index) => {
     const div = document.createElement("div");
-    div.className = "card";
+    div.className = "livro-item";
+    div.onclick = function() { abrirLeitura(livro); };
     
     div.innerHTML = `
-      <h3>${livro.titulo}</h3>
-      <p><strong>Autor:</strong> ${livro.autor || 'Desconhecido'}</p>
-      <div class="texto-livro">${livro.texto.replace(/\n/g, "<br>")}</div>
-      
-      <div class="botoes-centro">
-        <button class="btn btn-verde" onclick="baixarArquivo(this, 'epub')">📘 BAIXAR EPUB</button>
-        <button class="btn btn-azul" onclick="baixarArquivo(this, 'txt')">📄 BAIXAR TXT</button>
-        <br>
-        <button class="btn btn-vermelho" onclick="deletarLivro(${livro.id}, this)">🗑️ DELETAR</button>
-      </div>
+      <span class="livro-numero">${index + 1}.</span>
+      <span class="livro-titulo">${livro.titulo}</span>
+      <div class="autor">por ${livro.autor || 'Desconhecido'}</div>
     `;
     
-    div.querySelector('.btn-verde').dataset.titulo = livro.titulo;
-    div.querySelector('.btn-verde').dataset.autor = livro.autor;
-    div.querySelector('.btn-verde').dataset.texto = livro.texto;
-    div.querySelector('.btn-azul').dataset.titulo = livro.titulo;
-    div.querySelector('.btn-azul').dataset.autor = livro.autor;
-    div.querySelector('.btn-azul').dataset.texto = livro.texto;
-
     container.appendChild(div);
   });
 }
 
-function baixarArquivo(botao, tipo){
-  const titulo = botao.dataset.titulo;
-  const autor = botao.dataset.autor;
-  const texto = botao.dataset.texto;
-
-  if(tipo == 'epub'){
-    const zip = new JSZip();
-    zip.file("mimetype", "application/epub+zip");
-    
-    const metaInf = zip.folder("META-INF");
-    metaInf.file("container.xml", `<?xml version="1.0" encoding="UTF-8"?>
-<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
-  <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
-</container>`);
-
-    const oebps = zip.folder("OEBPS");
-    oebps.file("index.html", `<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>${titulo}</title>
-<style>body{font-family:Arial,sans-serif;line-height:1.6;padding:20px;}</style>
-</head>
-<body>
-<h1>${titulo}</h1>
-<h2>Por ${autor}</h2>
-<hr>
-<div>${texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
-</body>
-</html>`);
-    
-    oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" version="2.0">
-  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <dc:title>${titulo}</dc:title>
-    <dc:creator>${autor}</dc:creator>
-    <dc:language>pt-BR</dc:language>
-  </metadata>
-  <manifest>
-    <item id="index" href="index.html" media-type="application/xhtml+xml"/>
-  </manifest>
-  <spine>
-    <itemref id="index"/>
-  </spine>
-</package>`);
-
-    zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
-      const url = URL.createObjectURL(content);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = titulo + ".epub";
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-    });
-  }
-  else if(tipo == 'txt'){
-    const blob = new Blob([`${titulo}\nPor ${autor}\n\n${texto}`], {type: "text/plain;charset=utf-8"});
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = titulo + ".txt";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  }
+function abrirLeitura(livro){
+  document.getElementById("tituloLivro").innerText = livro.titulo;
+  document.getElementById("autorLivro").innerText = "Por " + (livro.autor || 'Desconhecido');
+  document.getElementById("textoLivro").innerText = livro.texto;
+  document.getElementById("paginaLeitura").style.display = "block";
+  window.scrollTo(0,0);
 }
 
-function deletarLivro(id, botao){
-  botao.parentElement.parentElement.remove();
-  let livros = JSON.parse(localStorage.getItem("meus_livros") || "[]");
-  livros = livros.filter(l => l.id != id);
-  localStorage.setItem("meus_livros", JSON.stringify(livros));
+function fecharLeitura(){
+  document.getElementById("paginaLeitura").style.display = "none";
 }
 
 window.onload = exibirLivros;
