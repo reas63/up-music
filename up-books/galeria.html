@@ -6,15 +6,6 @@
 <title>Meus Livros - UP BOOKS</title>
 
 <!-- 🌐 BOTÃO GOOGLE TRADUTOR -->
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'pt',
-    layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
-    autoDisplay: true
-  }, 'google_translate_element');
-}
-</script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <style>
@@ -26,7 +17,6 @@ function googleTranslateElementInit() {
   z-index: 9999;
 }
 
-/* Muda a aparência do botão do Google */
 #google_translate_element .goog-te-gadget-simple {
   background-color: #ffffff !important;
   border: 1px solid #cccccc !important;
@@ -40,20 +30,11 @@ function googleTranslateElementInit() {
   box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
 }
 
-/* Ajusta o ícone */
 #google_translate_element .goog-te-gadget-icon {
   display: inline-block !important;
   width: 24px !important;
   height: 24px !important;
   margin-right: 8px !important;
-  background: none !important;
-}
-
-/* Remove bordas extras */
-#google_translate_element iframe {
-  border: none !important;
-  height: auto !important;
-  width: auto !important;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -177,6 +158,14 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 </div>
 
 <script>
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({
+    pageLanguage: 'pt',
+    layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
+    autoDisplay: true
+  }, 'google_translate_element');
+}
+
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
@@ -214,7 +203,16 @@ function exibirLivros(){
 function abrirLeitura(livro){
   document.getElementById("tituloLivro").innerText = livro.titulo || "Livro";
   document.getElementById("autorLivro").innerText = "Por " + (livro.autor || 'Desconhecido');
-  document.getElementById("textoLivro").innerText = livro.texto || "Sem conteúdo";
+  
+  // ✅ GARANTE QUE O TEXTO VAI SER TRADUZIDO
+  const elementoTexto = document.getElementById("textoLivro");
+  elementoTexto.innerText = livro.texto || "Sem conteúdo";
+  
+  // 🔄 FORÇA O GOOGLE TRADUTOR VERIFICAR NOVO CONTEÚDO
+  if(window.google && google.translate) {
+    google.translate.TranslateElement.refresh();
+  }
+  
   document.getElementById("paginaLeitura").style.display = "block";
   window.scrollTo(0,0);
 }
