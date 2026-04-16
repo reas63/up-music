@@ -85,7 +85,7 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
-// ✅ CONFIGURAÇÃO DO CLOUDINARY
+// ✅ CONFIGURAÇÃO DO CLOUDINARY - VERIFIQUE SE ESTÁ CERTO!
 const CLOUD_NAME = "dlmucudnw";
 const UPLOAD_PRESET = "up-music";
 
@@ -102,6 +102,7 @@ function enviar(input){
   const formulario = new FormData();
   formulario.append("file", arquivo);
   formulario.append("upload_preset", UPLOAD_PRESET);
+  formulario.append("cloud_name", CLOUD_NAME); // ADICIONADO PARA GARANTIR
 
   // MOSTRA BARRA DE PROGRESSO
   document.getElementById("progressContainer").style.display = "block";
@@ -111,8 +112,8 @@ function enviar(input){
 
   // USA XMLHttpRequest PARA MONITORAR O PROGRESSO
   const xhr = new XMLHttpRequest();
-  // MUDANÇA AQUI: USANDO image/upload que funciona para tudo
-  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`);
+  // URL FINAL DEFINITIVA
+  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
 
   // ATUALIZA A BARRA CONFORME ENVIA
   xhr.upload.onprogress = function(e){
@@ -132,8 +133,8 @@ function enviar(input){
         alert("✅ Áudio salvo com sucesso!");
         input.value = "";
       } else {
-        alert("❌ Erro: " + (dados.error?.message || "Tente novamente"));
-        console.log(dados);
+        alert("❌ Erro: " + (dados.error?.message || "Verifique Cloud Name e Preset"));
+        console.log("Dados completos:", dados);
       }
     } catch(e){
       alert("❌ Erro na conexão!");
