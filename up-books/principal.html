@@ -43,7 +43,6 @@ textarea{min-height:200px;resize:vertical}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="./livros.js"></script>
 <script>
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
@@ -73,7 +72,7 @@ function gerarEpub() {
   
   oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="2.0">
-  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <metadata xmlns:dc="http://purl.org/dc/elements:1.1/">
     <dc:title>${titulo}</dc:title><dc:creator>${autor}</dc:creator><dc:language>pt</dc:language>
   </metadata>
   <manifest><item id="index" href="index.html" media-type="application/xhtml+xml"/></manifest>
@@ -97,32 +96,35 @@ function gerarTxt(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-// 🔥 SALVA DIRETO NO ARQUIVO livros.js
+// 🔥 FUNÇÃO CORRIGIDA PARA SALVAR
 function salvarLivro(){
   const titulo = document.getElementById("titulo").value;
   const autor = document.getElementById("autor").value;
   const texto = document.getElementById("texto").value;
 
-  if(!titulo || !texto){ alert("Preencha tudo!"); return; }
+  if(!titulo || !texto){ alert("Preencha título e texto!"); return; }
 
-  // Cria o objeto novo
-  const novoLivro = {
+  const livro = {
+    id: Date.now(),
     titulo: titulo,
     autor: autor,
     texto: texto
   };
 
-  // Adiciona na lista que veio do arquivo
-  bancoDeLivros.push(novoLivro);
+  // PEGA O QUE TEM E ADICIONA O NOVO
+  let livros = [];
+  if(localStorage.getItem("meus_livros")){
+    livros = JSON.parse(localStorage.getItem("meus_livros"));
+  }
 
-  // 🔴 ATENÇÃO:
-  // Como estamos no navegador, não consigo alterar o arquivo no servidor sozinho.
-  // MAS AGORA TEMOS UMA SOLUÇÃO MELHOR: Vamos usar o localStorage MAS COM CARREGAMENTO FORÇADO!
-  
-  localStorage.setItem("lista_livros", JSON.stringify(bancoDeLivros));
-  
-  alert("✅ LIVRO ADICIONADO NA LISTA!");
-  
+  livros.push(livro);
+
+  // SALVA DE VOLTA
+  localStorage.setItem("meus_livros", JSON.stringify(livros));
+
+  alert("✅ LIVRO SALVO COM SUCESSO!");
+
+  // LIMPA
   document.getElementById("titulo").value = "";
   document.getElementById("autor").value = "";
   document.getElementById("texto").value = "";

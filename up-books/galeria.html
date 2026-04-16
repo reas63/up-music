@@ -9,7 +9,7 @@
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
-.texto-livro{background:#111;padding:15px;border-radius:10px;margin:15px 0;line-height:1.6;font-size:1.1rem}
+.texto-livro{background:#111;padding:15px;border-radius:10px;margin:15px 0;line-height:1.6;font-size:1.1rem;white-space:pre-wrap}
 .btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;width:100%;max-width:300px}
 .btn-verde{background:#2ECC40;color:white}
 .btn-azul{background:#0074D9;color:white}
@@ -29,52 +29,41 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <div id="lista-livros"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
-<script src="./livros.js"></script>
 <script>
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-// 🔥 MISTURA O QUE ESTÁ NO ARQUIVO COM O QUE FOI SALVO
+// 🔥 CARREGA E MOSTRA TUDO
 function exibirLivros(){
-  let livrosFinais = [];
-  
-  // Pega do arquivo base
-  if(bancoDeLivros && bancoDeLivros.length > 0){
-    livrosFinais = bancoDeLivros;
-  }
-  
-  // Pega do navegador se tiver mais algum
-  const dadosSalvos = localStorage.getItem("lista_livros");
-  if(dadosSalvos){
-    const livrosLocais = JSON.parse(dadosSalvos);
-    livrosLocais.forEach(livro => {
-      // Adiciona se não tiver já
-      const existe = livrosFinais.find(l => l.titulo == livro.titulo);
-      if(!existe) livrosFinais.push(livro);
-    });
-  }
-
+  const dados = localStorage.getItem("meus_livros");
   const container = document.getElementById("lista-livros");
 
-  if(livrosFinais.length == 0){
-    container.innerHTML = "<div class='card'><p style='text-align:center;'>Nenhum livro na lista ainda.</p></div>";
+  if(!dados){
+    container.innerHTML = "<div class='card'><p style='text-align:center; font-size:1.2rem;'>📂 Nenhum livro salvo ainda.</p></div>";
     return;
   }
 
+  const livros = JSON.parse(dados);
   container.innerHTML = "";
 
-  livrosFinais.forEach(livro => {
+  livros.forEach(livro => {
     const div = document.createElement("div");
     div.className = "card";
+    
+    // TRATA O TEXTO PARA APARECER CERTO
+    const textoSeguro = livro.texto.replace(/'/g, "&#39;").replace(/"/g, "&quot;");
+    const textoHtml = livro.texto.replace(/\n/g, "<br>");
+
     div.innerHTML = `
       <h3>${livro.titulo}</h3>
       <p><strong>Autor:</strong> ${livro.autor || 'Desconhecido'}</p>
-      <div class="texto-livro">${livro.texto.replace(/\n/g, "<br>")}</div>
+      <div class="texto-livro">${textoHtml}</div>
       
       <div class="botoes-centro">
-        <button class="btn btn-verde" onclick="baixarEpub('${livro.titulo}', '${livro.autor}', `${livro.texto.replace(/'/g, '&#39;').replace(/"/g, '&quot;')}`)">📘 BAIXAR EPUB</button>
-        <button class="btn btn-azul" onclick="baixarTxt('${livro.titulo}', '${livro.autor}', `${livro.texto.replace(/'/g, '&#39;').replace(/"/g, '&quot;')}`)">📄 BAIXAR TXT</button>
-        ${ehAdmin ? `<br><button class="btn btn-vermelho" onclick="deletarLivro(this, ${livro.id})">🗑️ DELETAR</button>` : ''}
+        <button class="btn btn-verde" onclick="baixarEpub('${livro.titulo}', '${livro.autor}', '${textoSeguro}')">📘 BAIXAR EPUB</button>
+        <button class="btn btn-azul" onclick="baixarTxt('${livro.titulo}', '${livro.autor}', '${textoSeguro}')">📄 BAIXAR TXT</button>
+        <br>
+        <button class="btn btn-vermelho" onclick="deletarLivro(${livro.id}, this)">🗑️ DELETAR</button>
       </div>
     `;
     container.appendChild(div);
@@ -92,7 +81,7 @@ function baixarEpub(titulo, autor, texto) {
 </container>`);
 
   const oebps = zip.folder("OEBPS");
-  oebps.file("index.html", `<html><head><meta charset='utf-8'/></head><body><h1>${titulo}</h1><h2>Por ${autor}</h2><div>${texto.replace(/\n/g, '<br><br>')}</div></body></html>`);
+  oebps.file("index.html", `<html><head><meta charset='utf-8'/></head><body><h1>${titulo}</h1><h2>Por ${autor}</h2><div>${texto.replace(/\\n/g, '<br>')}</div></body></html>`);
   
   oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="2.0">
@@ -117,13 +106,19 @@ function baixarTxt(titulo, autor, texto){
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-function deletarLivro(elemento, id){
-  elemento.parentElement.parentElement.remove();
-  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+function deletarLivro(id, botao){
+  // APAGA DA TELA
+  botao.parentElement.parentElement.remove();
+
+  // APAGA DO BANCO
+  let livros = JSON.parse(localStorage.getItem("meus_livros"));
   livros = livros.filter(l => l.id != id);
-  localStorage.setItem("lista_livros", JSON.stringify(livros));
+  localStorage.setItem("meus_livros", JSON.stringify(livros));
+
+  alert("🗑️ Livro deletado!");
 }
 
+// EXECUTA ASSIM QUE ABRIR
 window.onload = exibirLivros;
 </script>
 
