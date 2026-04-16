@@ -51,7 +51,7 @@ if(!ehAdmin){
   document.getElementById("areaAdmin").style.display = "none";
 }
 
-// 🔥 FUNÇÃO PARA BAIXAR EPUB DIRETO NA PASTA DOWNLOADS
+// 🔥 FUNÇÃO CORRIGIDA PARA BAIXAR EPUB
 function gerarEpub() {
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
@@ -84,16 +84,15 @@ function gerarEpub() {
     const url = URL.createObjectURL(content);
     const a = document.createElement("a");
     a.href = url;
-    a.download = titulo + ".epub"; // 🔽 BAIXA DIRETO NO SEU CELULAR/PC
+    a.download = titulo + ".epub";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    alert("📘 Baixando EPUB...");
   });
 }
 
-// 🔥 FUNÇÃO PARA BAIXAR TXT
+// 🔥 FUNÇÃO CORRIGIDA PARA BAIXAR TXT
 function gerarTxt(){
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
@@ -106,15 +105,13 @@ function gerarTxt(){
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = titulo + ".txt"; // 🔽 BAIXA DIRETO
+  a.download = titulo + ".txt";
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
   URL.revokeObjectURL(url);
-  alert("📄 Baixando TXT...");
 }
 
-// 🔥 SALVAR
 function salvarLivro(){
   const titulo = document.getElementById("titulo").value;
   const autor = document.getElementById("autor").value;
@@ -133,8 +130,7 @@ function salvarLivro(){
   livros.push(livro);
   localStorage.setItem("meus_livros", JSON.stringify(livros));
 
-  alert("✅ SALVO! VAI APARECER EM MEUS LIVROS!");
-  
+  alert("✅ SALVO!");
   document.getElementById("titulo").value = "";
   document.getElementById("autor").value = "";
   document.getElementById("texto").value = "";

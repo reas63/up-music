@@ -33,7 +33,6 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-// 🔥 CARREGA TUDO
 function exibirLivros(){
   const dados = localStorage.getItem("meus_livros");
   const container = document.getElementById("lista-livros");
@@ -50,43 +49,52 @@ function exibirLivros(){
     const div = document.createElement("div");
     div.className = "card";
     
-    // Prepara texto seguro
-    const textoParaFuncao = livro.texto.replace(/'/g, "\\'").replace(/\n/g, "\\n");
-
+    // 🔧 Solução: Usamos atributos de dados para não quebrar o código
     div.innerHTML = `
       <h3>${livro.titulo}</h3>
       <p><strong>Autor:</strong> ${livro.autor || 'Desconhecido'}</p>
       <div class="texto-livro">${livro.texto.replace(/\n/g, "<br>")}</div>
       
       <div class="botoes-centro">
-        <button class="btn btn-verde" onclick="baixarEpub('${livro.titulo}', '${livro.autor}', '${textoParaFuncao}')">📘 BAIXAR EPUB</button>
-        <button class="btn btn-azul" onclick="baixarTxt('${livro.titulo}', '${livro.autor}', '${textoParaFuncao}')">📄 BAIXAR TXT</button>
+        <button class="btn btn-verde" onclick="baixarArquivo(this, 'epub')">📘 BAIXAR EPUB</button>
+        <button class="btn btn-azul" onclick="baixarArquivo(this, 'txt')">📄 BAIXAR TXT</button>
         <br>
         <button class="btn btn-vermelho" onclick="deletarLivro(${livro.id}, this)">🗑️ DELETAR</button>
       </div>
     `;
+    
+    // Guardamos os dados no próprio botão
+    div.querySelector('.btn-verde').dataset.titulo = livro.titulo;
+    div.querySelector('.btn-verde').dataset.autor = livro.autor;
+    div.querySelector('.btn-verde').dataset.texto = livro.texto;
+    div.querySelector('.btn-azul').dataset.titulo = livro.titulo;
+    div.querySelector('.btn-azul').dataset.autor = livro.autor;
+    div.querySelector('.btn-azul').dataset.texto = livro.texto;
+
     container.appendChild(div);
   });
 }
 
-// 🔥 BAIXAR EPUB DA LISTA
-function baixarEpub(titulo, autor, texto) {
-  // Converte de volta para texto normal
-  texto = texto.replace(/\\n/g, '\n').replace(/\\'/g, "'");
+// 🔥 FUNÇÃO ÚNICA PARA BAIXAR TUDO CERTO
+function baixarArquivo(botao, tipo){
+  const titulo = botao.dataset.titulo;
+  const autor = botao.dataset.autor;
+  const texto = botao.dataset.texto;
 
-  const zip = new JSZip();
-  zip.file("mimetype", "application/epub+zip");
-  
-  const metaInf = zip.folder("META-INF");
-  metaInf.file("container.xml", `<?xml version="1.0" encoding="UTF-8"?>
+  if(tipo == 'epub'){
+    const zip = new JSZip();
+    zip.file("mimetype", "application/epub+zip");
+    
+    const metaInf = zip.folder("META-INF");
+    metaInf.file("container.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
   <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
 </container>`);
 
-  const oebps = zip.folder("OEBPS");
-  oebps.file("index.html", `<html><head><meta charset='utf-8'/></head><body><h1>${titulo}</h1><h2>Por ${autor}</h2><div>${texto.replace(/\n/g, '<br>')}</div></body></html>`);
-  
-  oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
+    const oebps = zip.folder("OEBPS");
+    oebps.file("index.html", `<html><head><meta charset='utf-8'/></head><body><h1>${titulo}</h1><h2>Por ${autor}</h2><div>${texto.replace(/\n/g, '<br>')}</div></body></html>`);
+    
+    oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="2.0">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:title>${titulo}</dc:title><dc:creator>${autor}</dc:creator><dc:language>pt</dc:language>
@@ -95,43 +103,36 @@ function baixarEpub(titulo, autor, texto) {
   <spine><itemref id="index"/></spine>
 </package>`);
 
-  zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
-    const url = URL.createObjectURL(content);
+    zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
+      const url = URL.createObjectURL(content);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = titulo + ".epub";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }
+  else if(tipo == 'txt'){
+    const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
+    const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
+    const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = titulo + ".epub";
+    a.download = titulo + ".txt";
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    alert("📘 Baixando...");
-  });
+  }
 }
 
-// 🔥 BAIXAR TXT DA LISTA
-function baixarTxt(titulo, autor, texto){
-  texto = texto.replace(/\\n/g, '\n').replace(/\\'/g, "'");
-
-  const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
-  const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = titulo + ".txt";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-  alert("📄 Baixando...");
-}
-
-// 🔥 DELETAR
 function deletarLivro(id, botao){
   botao.parentElement.parentElement.remove();
   let livros = JSON.parse(localStorage.getItem("meus_livros") || "[]");
   livros = livros.filter(l => l.id != id);
   localStorage.setItem("meus_livros", JSON.stringify(livros));
-  alert("🗑️ Livro removido!");
 }
 
 window.onload = exibirLivros;
