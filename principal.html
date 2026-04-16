@@ -4,50 +4,25 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>UP MUSIC</title>
-
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-B9C3PNT1X7");
-</script>
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFDC00;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1rem}
+.btn{padding:15px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem}
 .btn-amarelo{background:#FFDC00;color:black}
 .btn-azul{background:#0074D9;color:white}
 .btn-roxo{background:linear-gradient(45deg,#6225E6,#BA68C8);color:white}
 .btn-copia{background:#111;color:#0f0;border:1px solid #0f0}
-.btn-upload{width:100%;padding:20px;font-size:1.3rem;background:linear-gradient(90deg,#0074D9,#00c851);color:white;border:none;border-radius:10px;margin:15px 0}
-.botoes-centro{text-align:center}
-.endereco{background:#111;padding:10px;border-radius:8px;margin:8px 0;font-family:monospace;font-size:0.9rem;word-break:break-all;border:1px solid #333}
-#google_translate_element{text-align:center;margin:10px 0}
-.goog-te-gadget-simple{background:white !important;border:1px solid #ccc !important;border-radius:20px !important;padding:6px 15px !important;display:inline-flex !important;align-items:center !important}
-.goog-te-gadget-icon{background:url(https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/translate/default/24px.svg) center center no-repeat !important;width:24px !important;height:24px !important;margin-right:8px !important}
-.goog-te-menu-value{color:black !important;font-size:14px !important}
-.status-text{text-align:center;margin:5px 0;font-size:0.9rem}
+.btn-selecionar{width:100%;padding:25px;font-size:1.5rem;background:linear-gradient(90deg,#0074D9,#00c851);color:white;border:none;border-radius:10px;margin:15px 0}
+.status-text{text-align:center;margin:10px 0;font-size:1rem}
 </style>
 </head>
 <body>
 
-<div id="google_translate_element"></div>
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: "pt", includedLanguages: "en,es,fr,de,it,ru,zh-CN,ja,ko", layout: google.translate.Translate.InlineLayout.SIMPLE}, "google_translate_element");
-}
-</script>
-
 <div class="card">
   <h2>🎵 UP MUSIC</h2>
-  <p style="text-align:center">Sua galeria de sons e músicas 🎧</p>
+  <p style="text-align:center;font-size:1.2rem">Sua galeria de sons e músicas 🎧</p>
   <div class="botoes-centro">
     <button class="btn btn-amarelo" onclick="window.location.href=galeria.html">🎶 VER GALERIA</button>
     <button class="btn" style="background:#333;color:white" onclick="sair()">🚪 SAIR</button>
@@ -55,75 +30,61 @@ function googleTranslateElementInit() {
 </div>
 
 <div class="card" id="areaUpload">
-  <label class="btn-upload">
-    🎤 SELECIONAR ÁUDIO
-    <input type="file" id="arquivo" accept="audio/*" style="display:none" onchange="preparar(this)">
+  <label class="btn-selecionar">
+    🎤 CLIQUE AQUI PARA SELECIONAR
+    <input type="file" id="arquivo" accept="audio/*" style="display:none" onchange="escolher(this)">
   </label>
-  <p class="status-text" id="statusTexto">Arquivo: Nenhum</p>
-  <button class="btn btn-azul" onclick="salvarAgora()" style="width:100%;margin-top:10px">💾 SALVAR MÚSICA</button>
+  <p class="status-text" id="statusTexto">✅ Pronto para receber músicas</p>
+  <button class="btn btn-azul" onclick="salvar()" style="width:100%;margin-top:15px;padding:15px;font-size:1.2rem">💾 SALVAR MÚSICA</button>
 </div>
 
 <div class="card">
   <h2>💸 FAÇA UMA DOAÇÃO</h2>
   <h3 style="color:#2ECC40;text-align:center">🇧🇷 PIX</h3>
-  <div class="endereco" id="pix">reas63@hotmail.com</div>
+  <div style="background:#111;padding:10px;border-radius:8px;margin:8px 0;font-family:monospace;font-size:0.9rem" id="pix">reas63@hotmail.com</div>
   <button class="btn btn-copia" onclick="copiar(pix)">📋 COPIAR CHAVE PIX</button>
 
   <hr style="border:1px solid #333;margin:20px 0">
 
   <h3 style="color:#6225E6;text-align:center">🪙 USDC - REDE BASE</h3>
-  <div class="endereco" id="crypto">0x27c4261074BB66a87F976769259368E4050fE771</div>
+  <div style="background:#111;padding:10px;border-radius:8px;margin:8px 0;font-family:monospace;font-size:0.9rem" id="crypto">0x27c4261074BB66a87F976769259368E4050fE771</div>
   <button class="btn btn-roxo" onclick="copiar(crypto)">📋 COPIAR ENDEREÇO</button>
 </div>
 
 <script>
-let arquivoAtual = null;
-let nomeAtual = "";
+let arquivoSelecionado = null;
 
-const tipoUsuario = localStorage.getItem("upmusic_user");
-const ehAdmin = tipoUsuario == "admin";
-
-window.onload = function(){
-  if(!ehAdmin) document.getElementById("areaUpload").style.display = "none";
-};
-
-function preparar(input){
+function escolher(input){
   if(!input.files || !input.files[0]) return;
-  arquivoAtual = input.files[0];
-  nomeAtual = arquivoAtual.name;
-  document.getElementById("statusTexto").innerText = "Arquivo: " + nomeAtual;
+  arquivoSelecionado = input.files[0];
+  document.getElementById("statusTexto").innerText = "📁 " + arquivoSelecionado.name;
 }
 
-function salvarAgora(){
-  if(!arquivoAtual){
-    alert("⚠️ Selecione um arquivo primeiro!");
+function salvar(){
+  if(!arquivoSelecionado){
+    alert("⚠️ Selecione uma música primeiro!");
     return;
   }
 
   const leitor = new FileReader();
   leitor.onload = function(e){
-    const dadosAudio = e.target.result;
-    
-    // PEGA A LISTA ATUAL
-    let lista = JSON.parse(localStorage.getItem("minhas_musicas") || "[]");
-    
-    // ADICIONA A NOVA
-    lista.push({
-      url: dadosAudio,
-      nome: nomeAtual,
+    const dados = {
+      nome: arquivoSelecionado.name,
+      url: e.target.result,
       id: Date.now()
-    });
+    };
     
-    // SALVA DE VOLTA
-    localStorage.setItem("minhas_musicas", JSON.stringify(lista));
+    let lista = JSON.parse(localStorage.getItem("musicas_salvas") || "[]");
+    lista.push(dados);
+    localStorage.setItem("musicas_salvas", JSON.stringify(lista));
     
     alert("✅ SALVO COM SUCESSO!");
-    document.getElementById("statusTexto").innerText = "Arquivo: Nenhum";
-    arquivoAtual = null;
+    document.getElementById("statusTexto").innerText = "✅ Pronto para receber músicas";
+    arquivoSelecionado = null;
     document.getElementById("arquivo").value = "";
   };
   
-  leitor.readAsDataURL(arquivoAtual);
+  leitor.readAsDataURL(arquivoSelecionado);
 }
 
 function sair(){
