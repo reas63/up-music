@@ -111,8 +111,8 @@ function enviar(input){
 
   // USA XMLHttpRequest PARA MONITORAR O PROGRESSO
   const xhr = new XMLHttpRequest();
-  // MUDANÇA AQUI: USANDO raw/upload NOVAMENTE MAS COM CONFIGURAÇÃO CERTA
-  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`);
+  // MUDANÇA AQUI: USANDO image/upload que funciona para tudo
+  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`);
 
   // ATUALIZA A BARRA CONFORME ENVIA
   xhr.upload.onprogress = function(e){
