@@ -9,8 +9,8 @@
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
-  gtag(js, new Date());
-  gtag(config, G-B9C3PNT1X7);
+  gtag("js", new Date());
+  gtag("config", "G-B9C3PNT1X7");
 </script>
 
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
@@ -40,7 +40,7 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 <div id="google_translate_element"></div>
 <script type="text/javascript">
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: pt, includedLanguages: en,es,fr,de,it,ru,zh-CN,ja,ko, layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, google_translate_element);
+  new google.translate.TranslateElement({pageLanguage: "pt", includedLanguages: "en,es,fr,de,it,ru,zh-CN,ja,ko", layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, "google_translate_element");
 }
 </script>
 
@@ -48,7 +48,7 @@ function googleTranslateElementInit() {
   <h2>🎵 UP MUSIC</h2>
   <p style="text-align:center">Sua galeria de sons e músicas 🎧</p>
   <div class="botoes-centro">
-    <button class="btn btn-amarelo" onclick="window.location.href=galeria.html">🎶 VER GALERIA</button>
+    <button class="btn btn-amarelo" onclick="window.location.href="galeria.html"">🎶 VER GALERIA</button>
     <button class="btn" style="background:#333;color:white" onclick="sair()">🚪 SAIR</button>
   </div>
 </div>
@@ -74,8 +74,10 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
-const CLOUD_NAME = "dmgf06kcx";
-const UPLOAD_PRESET = "up-art";
+// ✅ CONFIGURAÇÃO DO CLOUDINARY - TUDO CERTO!
+const CLOUD_NAME = "dlmucudnw";
+const UPLOAD_PRESET = "up-music";
+
 const tipoUsuario = localStorage.getItem("upmusic_user");
 const ehAdmin = tipoUsuario == "admin";
 
