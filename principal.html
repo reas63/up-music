@@ -21,7 +21,7 @@
 body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFDC00;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem}
+.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
 .btn-amarelo{background:#FFDC00;color:black}
 .btn-azul{background:#0074D9;color:white}
 .btn-roxo{background:linear-gradient(45deg,#6225E6,#BA68C8);color:white}
@@ -57,13 +57,13 @@ function googleTranslateElementInit() {
 }
 </script>
 
-<!-- CARD PRINCIPAL -->
+<!-- CARD PRINCIPAL - AGORA FUNCIONANDO CERTO -->
 <div class="card">
   <h2>🎵 UP MUSIC</h2>
   <p style="text-align:center;font-size:1.2rem">Sua galeria de sons e músicas 🎧</p>
   <div class="botoes-centro">
-    <!-- ✅ LINK DIRETO E CERTO -->
-    <button class="btn btn-amarelo" onclick="window.location.href=https://up-music.vercel.app/galeria.html">🎶 VER GALERIA</button>
+    <!-- ✅ LINK DIRETO COM TAG <a> - NÃO TEM COMO DAR ERRADO -->
+    <a href="https://up-music.vercel.app/galeria.html" class="btn btn-amarelo">🎶 VER GALERIA</a>
     <button class="btn" style="background:#333;color:white" onclick="sair()">🚪 SAIR</button>
   </div>
 </div>
