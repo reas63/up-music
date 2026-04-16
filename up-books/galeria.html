@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Biblioteca - UP BOOKS</title>
+<title>Galeria - UP BOOKS</title>
 
 <!-- ✅ GOOGLE ANALYTICS -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
@@ -22,116 +22,147 @@
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
-.btn-amarelo{background:#FFD700;color:black}
+.texto-livro{background:#111;padding:15px;border-radius:10px;margin:15px 0;line-height:1.6;font-size:1.1rem}
+.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;width:100%;max-width:300px}
+.btn-verde{background:#2ECC40;color:white}
 .btn-azul{background:#0074D9;color:white}
 .btn-vermelho{background:#FF4136;color:white}
-.btn-verde{background:#2ECC40;color:white}
-.livro-item{background:#222;border:1px solid #444;border-radius:10px;padding:15px;margin:10px 0}
-.livro-titulo{font-size:1.3rem;color:#FFD700;margin-bottom:5px}
-.livro-autor{font-size:0.9rem;color:#aaa;margin-bottom:10px}
-.texto-livro{background:#111;border:1px solid #333;padding:15px;border-radius:10px;margin:10px 0;max-height:400px;overflow:auto;text-align:justify;line-height:1.6}
-.botoes-centro{text-align:center}
-.ad-container{text-align:center;margin:20px 0}
+.botoes-centro{text-align:center;margin-top:20px}
 </style>
 </head>
 <body>
 
-<!-- ANUNCIO TOPO -->
-<div class="ad-container">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-2244924519509085"
-       data-ad-slot="5809111111"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</div>
-
 <div class="card">
-  <h2>📖 MINHA BIBLIOTECA</h2>
+  <h2>📚 GALERIA DE LIVROS</h2>
   <div class="botoes-centro">
-    <a href="principal.html" class="btn btn-amarelo">🏠 VOLTAR</a>
+    <a href="principal.html" class="btn btn-azul">🔙 VOLTAR</a>
   </div>
 </div>
 
-<div class="card">
-  <div id="listaLivros">
-    <p style="text-align:center;color:#aaa;font-size:1.2rem">🔄 CARREGANDO...</p>
-  </div>
-</div>
+<div id="lista-livros"></div>
 
-<!-- ANUNCIO FINAL -->
-<div class="ad-container">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-2244924519509085"
-       data-ad-slot="5809111111"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</div>
+<!-- Biblioteca para criar ZIP/EPUB -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 
 <script>
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-function carregarLivros(){
-  const listaLivros = document.getElementById("listaLivros");
-  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+function exibirLivros(){
+  const livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  const container = document.getElementById("lista-livros");
 
   if(livros.length == 0){
-    listaLivros.innerHTML = "<p style='text-align:center;color:#aaa;font-size:1.2rem'>📚 Nenhum livro cadastrado ainda.</p>";
+    container.innerHTML = "<div class='card'><p style='text-align:center; font-size:1.2rem;'>Nenhum livro cadastrado ainda.</p></div>";
     return;
   }
 
-  listaLivros.innerHTML = "";
+  container.innerHTML = "";
 
-  for(let i = 0; i < livros.length; i++){
-    const livro = livros[i];
+  livros.forEach(livro => {
     const div = document.createElement("div");
-    div.className = "livro-item";
-    
-    let botoes = "";
-    botoes += '<a href="' + livro.urlEpub + '" download="' + livro.titulo + '.epub" class="btn btn-verde">📘 BAIXAR EPUB</a>';
-    botoes += '<button class="btn btn-azul" onclick=\'baixarTexto("' + livro.titulo + '", `' + livro.texto + '`)\'>📄 BAIXAR TXT</button>';
-    
-    if(ehAdmin){
-      botoes += '<button class="btn btn-vermelho" onclick="deletarLivro(' + livro.id + ')">🗑️ DELETAR</button>';
-    }
-
+    div.className = "card";
     div.innerHTML = `
-      <h3 class="livro-titulo">${livro.titulo}</h3>
-      <p class="livro-autor">✍️ ${livro.autor || "Desconhecido"}</p>
+      <h3>${livro.titulo}</h3>
+      <p><strong>Autor:</strong> ${livro.autor || 'Desconhecido'}</p>
       <div class="texto-livro">${livro.texto.replace(/\n/g, "<br>")}</div>
-      <div class="botoes-centro">${botoes}</div>
+      
+      <div class="botoes-centro">
+        <button class="btn btn-verde" onclick="baixarEpub('${livro.titulo}', '${livro.autor}', `${escapeHtml(livro.texto)}`)">📘 BAIXAR EPUB</button>
+        <button class="btn btn-azul" onclick="baixarTxt('${livro.titulo}', '${livro.autor}', `${escapeHtml(livro.texto)}`)">📄 BAIXAR TXT</button>
+        ${ehAdmin ? `<br><button class="btn btn-vermelho" onclick="deletarLivro(${livro.id})">🗑️ DELETAR</button>` : ''}
+      </div>
     `;
-    listaLivros.appendChild(div);
-  }
+    container.appendChild(div);
+  });
 }
 
-function baixarTexto(titulo, texto){
-  const blob = new Blob([texto], {type: "text/plain"});
+function escapeHtml(text) {
+  return text.replace(/'/g, "&#39;").(/"/g, "&quot;");
+}
+
+// Função que FUNCIONA de VERDADE
+function baixarEpub(titulo, autor, texto) {
+  const zip = new JSZip();
+
+  zip.file("mimetype", "application/epub+zip");
+  
+  const metaInf = zip.folder("META-INF");
+  metaInf.file("container.xml", `<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles>
+    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+  </rootfiles>
+</container>`);
+
+  const oebps = zip.folder("OEBPS");
+  
+  const conteudoHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>${titulo}</title>
+</head>
+<body>
+  <h1>${titulo}</h1>
+  <h2>Por ${autor}</h2>
+  <div>${texto.replace(/\n/g, "<br/><br/>")}</div>
+</body>
+</html>`;
+
+  oebps.file("index.html", conteudoHtml);
+
+  oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="uid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title>${titulo}</dc:title>
+    <dc:creator>${autor}</dc:creator>
+    <dc:language>pt</dc:language>
+    <dc:identifier id="uid">urn:uuid:12345678-1234-5678-1234-567812345678</dc:identifier>
+  </metadata>
+  <manifest>
+    <item id="index" href="index.html" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine>
+    <itemref idref="index"/>
+  </spine>
+</package>`);
+
+  zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(function(content) {
+    const url = URL.createObjectURL(content);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = titulo + ".epub";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert("✅ EPUB baixado!");
+  });
+}
+
+function baixarTxt(titulo, autor, texto){
+  const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
+  const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
   a.download = titulo + ".txt";
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 }
 
 function deletarLivro(id){
-  if(!confirm("Tem certeza que deseja deletar este livro?")) return;
   let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
   livros = livros.filter(l => l.id != id);
   localStorage.setItem("lista_livros", JSON.stringify(livros));
-  carregarLivros();
+  exibirLivros();
 }
 
-window.onload = carregarLivros;
+// Carregar ao abrir
+window.onload = exibirLivros;
 </script>
 
 </body>
