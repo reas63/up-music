@@ -8,28 +8,54 @@
 <!-- 🌐 BOTÃO GOOGLE TRADUTOR -->
 <script type="text/javascript">
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: 'pt', layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT}, 'google_translate_element');
+  new google.translate.TranslateElement({
+    pageLanguage: 'pt',
+    layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
+    autoDisplay: true
+  }, 'google_translate_element');
 }
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <style>
+/* ✨ ESTILO PARA FICAR IGUAL A FOTO */
 #google_translate_element {
   position: fixed;
   top: 10px;
   right: 10px;
   z-index: 9999;
-  background: white;
-  padding: 5px;
-  border-radius: 5px;
-  box-shadow: 0 0 5px rgba(0,0,0,0.3);
 }
-.goog-te-gadget-icon {
+
+/* Muda a aparência do botão do Google */
+#google_translate_element .goog-te-gadget-simple {
+  background-color: #ffffff !important;
+  border: 1px solid #cccccc !important;
+  border-radius: 25px !important;
+  padding: 8px 15px !important;
+  font-family: Arial, sans-serif !important;
+  font-size: 16px !important;
+  color: #000000 !important;
+  display: flex !important;
+  align-items: center !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+}
+
+/* Ajusta o ícone */
+#google_translate_element .goog-te-gadget-icon {
   display: inline-block !important;
-  width: 20px !important;
-  height: 20px !important;
-  margin-right: 5px !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 8px !important;
+  background: none !important;
 }
+
+/* Remove bordas extras */
+#google_translate_element iframe {
+  border: none !important;
+  height: auto !important;
+  width: auto !important;
+}
+
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
@@ -154,7 +180,6 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-// ✅ FUNÇÃO PARA CARREGAR TUDO
 function exibirLivros(){
   const dados = localStorage.getItem("meus_livros");
   const container = document.getElementById("lista-livros");
