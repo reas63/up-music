@@ -6,6 +6,16 @@
 <title>Meus Livros - UP BOOKS</title>
 
 <style>
+/* ✨ ESCONDE A BARRA DO VERCEL PARA VOCÊ NÃO VER MAIS ISSO */
+#vercel-toolbar, .vercel-toolbar {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  width: 0 !important;
+  position: absolute !important;
+  top: -9999px !important;
+}
+
 /* ✨ BOTÃO TRADUTOR FORA */
 #google_translate_element {
   position: fixed;
@@ -14,8 +24,13 @@
   z-index: 9999;
 }
 
-/* ✨ BOTÃO PERSONALIZADO DENTRO DO LEITOR */
-.btn-traduzir {
+/* ✨ ESTILO DO TRADUTOR DENTRO DO LEITOR */
+#google_translate_element2 {
+  display: inline-block;
+  margin-left: 10px;
+}
+
+#google_translate_element2 .goog-te-gadget-simple {
   background-color: #ffffff !important;
   border: 1px solid #dddddd !important;
   border-radius: 25px !important;
@@ -26,14 +41,13 @@
   display: inline-flex !important;
   align-items: center !important;
   box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
-  cursor: pointer !important;
-  margin-left: 10px !important;
 }
 
-.btn-traduzir img {
-  width: 24px;
-  height: 24px;
-  margin-right: 8px;
+.goog-te-gadget-icon {
+  display: inline-block !important;
+  width: 24px !important;
+  height: 24px !important;
+  margin-right: 8px !important;
 }
 
 *{margin:0;padding:0;box-sizing:border-box}
@@ -142,6 +156,25 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 </style>
 
 <!-- 🌐 SCRIPT DO GOOGLE TRADUTOR -->
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  // Botão principal fora
+  new google.translate.TranslateElement({
+    pageLanguage: 'pt',
+    layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
+    autoDisplay: true
+  }, 'google_translate_element');
+
+  // Botão dentro do leitor - CARREGA DEPOIS
+  setTimeout(function() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'pt',
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+      autoDisplay: true
+    }, 'google_translate_element2');
+  }, 1000);
+}
+</script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
@@ -164,12 +197,7 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
     <!-- ✅ BOTÕES LADO A LADO -->
     <div class="barra-botoes">
       <button class="btn-fechar" onclick="fecharLeitura()">✖️ FECHAR</button>
-      
-      <!-- ✨ BOTÃO PERSONALIZADO DE TRADUÇÃO -->
-      <button class="btn-traduzir" onclick="abrirTraducao()">
-        <img src="https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg" alt="Traduzir">
-        Traduzir
-      </button>
+      <div id="google_translate_element2"></div>
     </div>
 
     <h1 id="tituloLivro" style="color:#FFD700; text-align:center;"></h1>
@@ -180,22 +208,6 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 </div>
 
 <script>
-// ✅ INICIALIZA O TRADUTOR
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({
-    pageLanguage: 'pt',
-    layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
-    autoDisplay: true
-  }, 'google_translate_element');
-}
-
-// ✅ FUNÇÃO PARA ABRIR O MENU DE IDIOMAS QUANDO CLICAR NO BOTÃO
-function abrirTraducao() {
-  // Simula o clique no widget original
-  const widget = document.querySelector('.goog-te-gadget-simple');
-  if (widget) widget.click();
-}
-
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
