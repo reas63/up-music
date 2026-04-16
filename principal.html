@@ -19,7 +19,7 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white}
-.card{background:rgba(0,0,0,0.5);border:2px solid #FFDC00;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
+.card{background:rgba(0,0,0,0.5);border:2px solid #FFDC00;border-radius:15px;padding:20px;margin:15px auto;max-width:600}
 h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 .btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem}
 .btn-amarelo{background:#FFDC00;color:black}
@@ -50,7 +50,7 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 </head>
 <body>
 
-<div id="google_translate_element"></div>
+<div id="google_translate_element"></script>
 <script type="text/javascript">
 function googleTranslateElementInit() {
   new google.translate.TranslateElement({pageLanguage: "pt", includedLanguages: "en,es,fr,de,it,ru,zh-CN,ja,ko", layout: google.translate.Translate.InlineLayout.SIMPLE}, "google_translate_element");
@@ -62,7 +62,8 @@ function googleTranslateElementInit() {
   <h2>🎵 UP MUSIC</h2>
   <p style="text-align:center;font-size:1.2rem">Sua galeria de sons e músicas 🎧</p>
   <div class="botoes-centro">
-    <button class="btn btn-amarelo" onclick="window.location.href=galeria.html">🎶 VER GALERIA</button>
+    <!-- ✅ LINK CORRIGIDO AQUI -->
+    <button class="btn btn-amarelo" onclick="window.location.href=./galeria.html">🎶 VER GALERIA</button>
     <button class="btn" style="background:#333;color:white" onclick="sair()">🚪 SAIR</button>
   </div>
 </div>
@@ -115,7 +116,7 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
-// ✅ CONFIGURAÇÕES DO CLOUDINARY (CORRETAS)
+// ✅ CONFIGURAÇÕES DO CLOUDINARY
 const CLOUD_NAME = "dlmucudnw";
 const UPLOAD_PRESET = "up-music";
 const API_KEY = "136563391145768";
@@ -131,7 +132,6 @@ window.onload = function(){
   if(ehAdmin){
     document.getElementById("tipoUsuario").innerText = "🔐 Administrador";
     document.getElementById("areaUpload").style.display = "block";
-    // MOSTRA BOTÕES DE EDITAR
     document.getElementById("btnEditarFoto").style.display = "inline-block";
     document.getElementById("btnEditarNome").style.display = "inline-block";
     document.getElementById("btnEditarBio").style.display = "inline-block";
