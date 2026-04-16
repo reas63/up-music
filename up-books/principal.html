@@ -11,9 +11,25 @@ function googleTranslateElementInit() {
   new google.translate.TranslateElement({pageLanguage: 'pt', layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT}, 'google_translate_element');
 }
 </script>
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <style>
+#google_translate_element {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 9999;
+  background: white;
+  padding: 5px;
+  border-radius: 5px;
+  box-shadow: 0 0 5px rgba(0,0,0,0.3);
+}
+.goog-te-gadget-icon {
+  display: inline-block !important;
+  width: 20px !important;
+  height: 20px !important;
+  margin-right: 5px !important;
+}
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
