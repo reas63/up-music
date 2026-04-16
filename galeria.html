@@ -43,44 +43,42 @@ function googleTranslateElementInit() {
 
 <div class="card">
   <div id="listaAudios">
-    <p class=vazio>🎵 Carregando músicas...</p>
+    <p class="vazio">🔄 CARREGANDO...</p>
   </div>
 </div>
 
 <script>
-function carregarAudios(){
-  const listaAudios = document.getElementById("listaAudios");
+function carregar(){
+  const listaDiv = document.getElementById("listaAudios");
   
-  // Pega as músicas salvas
-  let audios = JSON.parse(localStorage.getItem("lista_audios") || "[]");
+  // BUSCA AS MÚSICAS
+  let musicas = JSON.parse(localStorage.getItem("minhas_musicas") || "[]");
 
-  // Se não tiver nada
-  if(audios.length == 0){
-    listaAudios.innerHTML = "<p class=vazio>🎵 Nenhuma música cadastrada ainda 🎵</p>";
+  if(musicas.length == 0){
+    listaDiv.innerHTML = "<p class=vazio>😢 NENHUMA MÚSICA SALVA AINDA</p>";
     return;
   }
 
-  // Inverte para mostrar as últimas primeiro
-  audios.reverse();
-  listaAudios.innerHTML = "";
+  // INVERTE A ORDEM
+  musicas.reverse();
+  listaDiv.innerHTML = "";
 
-  // Cria cada item da lista
-  audios.forEach(audio => {
+  // COLOCA CADA UMA NA TELA
+  musicas.forEach(m => {
     const div = document.createElement("div");
     div.className = "audio-item";
     div.innerHTML = `
-      <p>🎵 ${audio.nome || "Música sem nome"}</p>
-      <audio controls preload="none">
-        <source src="${audio.url}">
-        Seu navegador não suporta áudio.
+      <p>🎵 ${m.nome}</p>
+      <audio controls>
+        <source src="${m.url}">
       
     `;
-    listaAudios.appendChild(div);
+    listaDiv.appendChild(div);
   });
 }
 
-// Carrega assim que abrir a página
-window.onload = carregarAudios;
+// EXECUTA QUANDO ABRIR
+window.onload = carregar;
 </script>
 
 </body>
