@@ -33,8 +33,17 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
+// 🔥 FUNÇÃO FORÇADA PARA CARREGAR TUDO
 function exibirLivros(){
-  const livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  console.log("Carregando livros...");
+  const dados = localStorage.getItem("lista_livros");
+  console.log("Dados brutos:", dados);
+  
+  let livros = [];
+  if(dados){
+    livros = JSON.parse(dados);
+  }
+
   const container = document.getElementById("lista-livros");
 
   if(livros.length == 0){
@@ -45,6 +54,7 @@ function exibirLivros(){
   container.innerHTML = "";
 
   livros.forEach(livro => {
+    console.log("Mostrando:", livro.titulo);
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
@@ -81,7 +91,7 @@ function baixarEpub(titulo, autor, texto) {
     <dc:title>${titulo}</dc:title><dc:creator>${autor}</dc:creator><dc:language>pt</dc:language>
   </metadata>
   <manifest><item id="index" href="index.html" media-type="application/xhtml+xml"/></manifest>
-  <spine><itemref id="index"/></spine>
+  <spine><itemref idref="index"/></spine>
 </package>`);
 
   zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
@@ -105,7 +115,11 @@ function deletarLivro(id){
   exibirLivros();
 }
 
-window.onload = exibirLivros;
+// Carregar assim que abrir a página
+window.onload = function(){
+  console.log("Página carregada!");
+  exibirLivros();
+}
 </script>
 
 </body>

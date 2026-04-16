@@ -23,7 +23,6 @@ textarea{min-height:200px;resize:vertical}
 <div class="card">
   <h2>📖 UP BOOKS</h2>
   <div class="botoes-centro">
-    <!-- AQUI ESTÁ O LINK CERTINHO IGUAL NO UP MUSIC -->
     <a href="./galeria.html" class="btn btn-amarelo">📚 VER LIVROS</a>
     <a href="./index.html" class="btn btn-azul">🚪 SAIR</a>
   </div>
@@ -97,6 +96,7 @@ function gerarTxt(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
+// 🔥 FUNÇÃO CORRIGIDA PARA SALVAR
 function salvarLivro(){
   const titulo = document.getElementById("titulo").value;
   const autor = document.getElementById("autor").value;
@@ -104,12 +104,24 @@ function salvarLivro(){
 
   if(!titulo || !texto){ alert("Preencha tudo!"); return; }
 
-  const livro = { id: Date.now(), titulo: titulo, autor: autor, texto: texto };
+  // Cria o objeto livro
+  const livro = {
+    id: Date.now(),
+    titulo: titulo,
+    autor: autor,
+    texto: texto
+  };
+
+  // Pega o que já tem e adiciona o novo
   let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
   livros.push(livro);
+  
+  // Salva de forma FORÇADA
   localStorage.setItem("lista_livros", JSON.stringify(livros));
 
-  alert("✅ LIVRO SALVO NA GALERIA!");
+  alert("✅ LIVRO SALVO! AGORA VAI APARECER NA GALERIA!");
+  
+  // Limpa os campos
   document.getElementById("titulo").value = "";
   document.getElementById("autor").value = "";
   document.getElementById("texto").value = "";
