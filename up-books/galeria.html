@@ -29,23 +29,41 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <div id="lista-livros"></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="./livros.js"></script>
 <script>
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-// 🔥 CARREGA TUDO QUE ESTÁ SALVO
+// 🔥 MISTURA O QUE ESTÁ NO ARQUIVO COM O QUE FOI SALVO
 function exibirLivros(){
-  const livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  let livrosFinais = [];
+  
+  // Pega do arquivo base
+  if(bancoDeLivros && bancoDeLivros.length > 0){
+    livrosFinais = bancoDeLivros;
+  }
+  
+  // Pega do navegador se tiver mais algum
+  const dadosSalvos = localStorage.getItem("lista_livros");
+  if(dadosSalvos){
+    const livrosLocais = JSON.parse(dadosSalvos);
+    livrosLocais.forEach(livro => {
+      // Adiciona se não tiver já
+      const existe = livrosFinais.find(l => l.titulo == livro.titulo);
+      if(!existe) livrosFinais.push(livro);
+    });
+  }
+
   const container = document.getElementById("lista-livros");
 
-  if(livros.length == 0){
-    container.innerHTML = "<div class='card'><p style='text-align:center;'>Nenhum livro salvo ainda.</p></div>";
+  if(livrosFinais.length == 0){
+    container.innerHTML = "<div class='card'><p style='text-align:center;'>Nenhum livro na lista ainda.</p></div>";
     return;
   }
 
   container.innerHTML = "";
 
-  livros.forEach(livro => {
+  livrosFinais.forEach(livro => {
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
@@ -56,7 +74,7 @@ function exibirLivros(){
       <div class="botoes-centro">
         <button class="btn btn-verde" onclick="baixarEpub('${livro.titulo}', '${livro.autor}', `${livro.texto.replace(/'/g, '&#39;').replace(/"/g, '&quot;')}`)">📘 BAIXAR EPUB</button>
         <button class="btn btn-azul" onclick="baixarTxt('${livro.titulo}', '${livro.autor}', `${livro.texto.replace(/'/g, '&#39;').replace(/"/g, '&quot;')}`)">📄 BAIXAR TXT</button>
-        ${ehAdmin ? `<br><button class="btn btn-vermelho" onclick="deletarLivro(${livro.id})">🗑️ DELETAR</button>` : ''}
+        ${ehAdmin ? `<br><button class="btn btn-vermelho" onclick="deletarLivro(this, ${livro.id})">🗑️ DELETAR</button>` : ''}
       </div>
     `;
     container.appendChild(div);
@@ -82,7 +100,7 @@ function baixarEpub(titulo, autor, texto) {
     <dc:title>${titulo}</dc:title><dc:creator>${autor}</dc:creator><dc:language>pt</dc:language>
   </metadata>
   <manifest><item id="index" href="index.html" media-type="application/xhtml+xml"/></manifest>
-  <spine><itemref idref="index"/></spine>
+  <spine><itemref id="index"/></spine>
 </package>`);
 
   zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
@@ -99,11 +117,11 @@ function baixarTxt(titulo, autor, texto){
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-function deletarLivro(id){
+function deletarLivro(elemento, id){
+  elemento.parentElement.parentElement.remove();
   let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
   livros = livros.filter(l => l.id != id);
   localStorage.setItem("lista_livros", JSON.stringify(livros));
-  exibirLivros();
 }
 
 window.onload = exibirLivros;
