@@ -43,23 +43,28 @@ function googleTranslateElementInit() {
 
 <div class="card">
   <div id="listaAudios">
-    <p class=vazio>🎵 Nenhuma música cadastrada ainda 🎵</p>
+    <p class=vazio>🎵 Carregando músicas...</p>
   </div>
 </div>
 
 <script>
 function carregarAudios(){
   const listaAudios = document.getElementById("listaAudios");
+  
+  // Pega as músicas salvas
   let audios = JSON.parse(localStorage.getItem("lista_audios") || "[]");
 
+  // Se não tiver nada
   if(audios.length == 0){
     listaAudios.innerHTML = "<p class=vazio>🎵 Nenhuma música cadastrada ainda 🎵</p>";
     return;
   }
 
+  // Inverte para mostrar as últimas primeiro
   audios.reverse();
   listaAudios.innerHTML = "";
 
+  // Cria cada item da lista
   audios.forEach(audio => {
     const div = document.createElement("div");
     div.className = "audio-item";
@@ -74,6 +79,7 @@ function carregarAudios(){
   });
 }
 
+// Carrega assim que abrir a página
 window.onload = carregarAudios;
 </script>
 
