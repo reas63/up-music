@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UP BOOKS</title>
+
+<!-- ✅ GOOGLE ANALYTICS -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-B9C3PNT1X7");
+</script>
+
+<!-- ✅ GOOGLE ADSENSE -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
+
+<script src="https://unpkg.com/epub-gen-memory@1.0.3/dist/epub-gen-memory.umd.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
+.card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
+h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
+.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
+.btn-amarelo{background:#FFD700;color:black}
+.btn-azul{background:#0074D9;color:white}
+.btn-vermelho{background:#FF4136;color:white}
+.btn-verde{background:#2ECC40;color:white}
+textarea{width:100%;height:200px;background:#111;border:1px solid #444;border-radius:10px;padding:15px;color:white;font-size:1rem;margin:10px 0}
+input[type="text"]{width:100%;padding:15px;background:#111;border:1px solid #444;border-radius:10px;color:white;margin:10px 0}
+.botoes-centro{text-align:center}
+.ad-container{text-align:center;margin:20px 0}
+</style>
+</head>
+<body>
+
+<!-- ANUNCIO TOPO -->
+<div class="ad-container">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-2244924519509085"
+       data-ad-slot="5809111111"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="card">
+  <h2>📚 UP BOOKS</h2>
+  <p style="text-align:center;font-size:1.2rem">Sua biblioteca de textos e livros 📖</p>
+  <div class="botoes-centro">
+    <a href="galeria.html" class="btn btn-amarelo">📖 VER BIBLIOTECA</a>
+    <button class="btn" style="background:#333;color:white" onclick="sair()">🚪 SAIR</button>
+  </div>
+</div>
+
+<!-- ANUNCIO MEIO -->
+<div class="ad-container">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-2244924519509085"
+       data-ad-slot="5809111111"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<!-- CARD DE CRIAÇÃO DE LIVRO -->
+<div class="card" id="areaUpload">
+  <h2>📝 CRIAR NOVO LIVRO</h2>
+  
+  <input type="text" id="titulo" placeholder="Título do Livro">
+  <input type="text" id="autor" placeholder="Nome do Autor">
+  
+  <textarea id="conteudo" placeholder="Cole ou digite seu texto aqui..."></textarea>
+  
+  <div class="botoes-centro">
+    <button class="btn btn-verde" onclick="gerarEbook()">📘 GERAR EPUB</button>
+    <button class="btn btn-azul" onclick="baixarTXT()">📄 BAIXAR TXT</button>
+  </div>
+</div>
+
+<!-- ANUNCIO FINAL -->
+<div class="ad-container">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-2244924519509085"
+       data-ad-slot="5809111111"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<script>
+const tipoUsuario = localStorage.getItem("upbooks_user");
+const ehAdmin = tipoUsuario == "admin";
+
+window.onload = function(){
+  if(!ehAdmin){
+    document.getElementById("areaUpload").style.display = "none";
+  }
+};
+
+function gerarEbook(){
+  const titulo = document.getElementById("titulo").value || "Livro Sem Nome";
+  const autor = document.getElementById("autor").value || "Desconhecido";
+  const conteudo = document.getElementById("conteudo").value;
+
+  if(!conteudo){
+    alert("⚠️ Digite algum texto primeiro!");
+    return;
+  }
+
+  const opt = {
+    title: titulo,
+    author: autor,
+    content: [
+      { title: "Conteúdo", data: conteudo }
+    ]
+  };
+
+  EpubGen(opt).then(buffer => {
+    const blob = new Blob([buffer], {type: "application/epub+zip"});
+    const url = URL.createObjectURL(blob);
+    
+    salvarLivro(titulo, autor, url, conteudo);
+    alert("✅ EPUB Gerado e Salvo na Biblioteca!");
+  });
+}
+
+function baixarTXT(){
+  const titulo = document.getElementById("titulo").value || "livro";
+  const conteudo = document.getElementById("conteudo").value;
+
+  if(!conteudo){
+    alert("⚠️ Digite algum texto primeiro!");
+    return;
+  }
+
+  const blob = new Blob([conteudo], {type: "text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = titulo.replace(/[^a-z0-9]/gi, "_") + ".txt";
+  a.click();
+
+  salvarLivro(titulo, document.getElementById("autor").value, null, conteudo);
+}
+
+function salvarLivro(titulo, autor, urlEpub, texto){
+  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  livros.push({
+    id: Date.now(),
+    titulo: titulo,
+    autor: autor,
+    urlEpub: urlEpub,
+    texto: texto
+  });
+  localStorage.setItem("lista_livros", JSON.stringify(livros));
+}
+
+function sair(){
+  localStorage.removeItem("upbooks_user");
+  window.location.href="index.html";
+}
+</script>
+
+</body>
+</html>

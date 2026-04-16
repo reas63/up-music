@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login - UP BOOKS</title>
+
+<!-- ✅ GOOGLE ANALYTICS -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-B9C3PNT1X7");
+</script>
+
+<!-- ✅ GOOGLE ADSENSE -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;display:flex;align-items:center;justify-content:center;font-family:Arial}
+.card{background:rgba(0,0,0,0.7);border:2px solid #FFD700;border-radius:15px;padding:30px;width:90%;max-width:400px;text-align:center;color:white}
+h2{color:#FFD700;margin-bottom:20px;font-size:2rem}
+input{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;background:#222;color:white;font-size:1.1rem;border:1px solid #444}
+.btn{padding:15px 30px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:10px 5px;font-size:1.1rem}
+.btn-entrar{background:#FFD700;color:black}
+.btn-admin{background:#222;color:#0f0;border:1px solid #0f0}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h2>📚 UP BOOKS</h2>
+  <p>Digite sua senha para entrar</p>
+  <input type="password" id="senha" placeholder="Digite a senha">
+  <br>
+  <button class="btn btn-entrar" onclick="entrar()">ENTRAR</button>
+  <button class="btn btn-admin" onclick="entrarAdmin()">🔐 ENTRAR COMO ADMIN</button>
+</div>
+
+<script>
+function entrar(){
+  const senha = document.getElementById("senha").value;
+  if(senha == "S46c!B!poW-5"){
+    localStorage.setItem("upbooks_user", "visitante");
+    window.location.href="principal.html";
+  } else {
+    alert("❌ Senha incorreta!");
+  }
+}
+
+function entrarAdmin(){
+  localStorage.setItem("upbooks_user", "admin");
+  window.location.href="principal.html";
+}
+</script>
+
+</body>
+</html>

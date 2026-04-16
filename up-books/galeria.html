@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biblioteca - UP BOOKS</title>
+
+<!-- ✅ GOOGLE ANALYTICS -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag("js", new Date());
+  gtag("config", "G-B9C3PNT1X7");
+</script>
+
+<!-- ✅ GOOGLE ADSENSE -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
+.card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
+h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
+.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
+.btn-amarelo{background:#FFD700;color:black}
+.btn-azul{background:#0074D9;color:white}
+.btn-vermelho{background:#FF4136;color:white}
+.btn-verde{background:#2ECC40;color:white}
+.livro-item{background:#222;border:1px solid #444;border-radius:10px;padding:15px;margin:10px 0}
+.livro-titulo{font-size:1.3rem;color:#FFD700;margin-bottom:5px}
+.livro-autor{font-size:0.9rem;color:#aaa;margin-bottom:10px}
+.texto-livro{background:#111;border:1px solid #333;padding:15px;border-radius:10px;margin:10px 0;max-height:400px;overflow:auto;text-align:justify;line-height:1.6}
+.botoes-centro{text-align:center}
+.ad-container{text-align:center;margin:20px 0}
+</style>
+</head>
+<body>
+
+<!-- ANUNCIO TOPO -->
+<div class="ad-container">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-2244924519509085"
+       data-ad-slot="5809111111"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<div class="card">
+  <h2>📖 MINHA BIBLIOTECA</h2>
+  <div class="botoes-centro">
+    <a href="principal.html" class="btn btn-amarelo">🏠 VOLTAR</a>
+  </div>
+</div>
+
+<div class="card">
+  <div id="listaLivros">
+    <p style="text-align:center;color:#aaa;font-size:1.2rem">🔄 CARREGANDO...</p>
+  </div>
+</div>
+
+<!-- ANUNCIO FINAL -->
+<div class="ad-container">
+  <ins class="adsbygoogle"
+       style="display:block"
+       data-ad-client="ca-pub-2244924519509085"
+       data-ad-slot="5809111111"
+       data-ad-format="auto"
+       data-full-width-responsive="true"></ins>
+  <script>
+       (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
+</div>
+
+<script>
+const tipoUsuario = localStorage.getItem("upbooks_user");
+const ehAdmin = tipoUsuario == "admin";
+
+function carregarLivros(){
+  const listaLivros = document.getElementById("listaLivros");
+  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+
+  if(livros.length == 0){
+    listaLivros.innerHTML = "<p style='text-align:center;color:#aaa;font-size:1.2rem'>📚 Nenhum livro cadastrado ainda.</p>";
+    return;
+  }
+
+  listaLivros.innerHTML = "";
+
+  for(let i = 0; i < livros.length; i++){
+    const livro = livros[i];
+    const div = document.createElement("div");
+    div.className = "livro-item";
+    
+    let botoes = "";
+    botoes += '<a href="' + livro.urlEpub + '" download="' + livro.titulo + '.epub" class="btn btn-verde">📘 BAIXAR EPUB</a>';
+    botoes += '<button class="btn btn-azul" onclick=\'baixarTexto("' + livro.titulo + '", `' + livro.texto + '`)\'>📄 BAIXAR TXT</button>';
+    
+    if(ehAdmin){
+      botoes += '<button class="btn btn-vermelho" onclick="deletarLivro(' + livro.id + ')">🗑️ DELETAR</button>';
+    }
+
+    div.innerHTML = `
+      <h3 class="livro-titulo">${livro.titulo}</h3>
+      <p class="livro-autor">✍️ ${livro.autor || "Desconhecido"}</p>
+      <div class="texto-livro">${livro.texto.replace(/\n/g, "<br>")}</div>
+      <div class="botoes-centro">${botoes}</div>
+    `;
+    listaLivros.appendChild(div);
+  }
+}
+
+function baixarTexto(titulo, texto){
+  const blob = new Blob([texto], {type: "text/plain"});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = titulo + ".txt";
+  a.click();
+}
+
+function deletarLivro(id){
+  if(!confirm("Tem certeza que deseja deletar este livro?")) return;
+  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  livros = livros.filter(l => l.id != id);
+  localStorage.setItem("lista_livros", JSON.stringify(livros));
+  carregarLivros();
+}
+
+window.onload = carregarLivros;
+</script>
+
+</body>
+</html>
