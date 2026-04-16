@@ -34,7 +34,6 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 .goog-te-gadget-icon{background:url(https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/translate/default/24px.svg) center center no-repeat !important;width:24px !important;height:24px !important;margin-right:8px !important}
 .goog-te-menu-value{color:black !important;font-size:14px !important}
 
-/* ESTILO DA BARRA DE PROGRESSO */
 .progress-container{width:100%;height:20px;background:#333;border-radius:10px;margin:10px 0;overflow:hidden;display:none}
 .progress-bar{height:100%;background:linear-gradient(90deg,#00c851,#FFDC00);width:0%;transition:width 0.3s ease;text-align:center;line-height:20px;font-weight:bold;color:black}
 .status-text{text-align:center;margin:5px 0;font-size:0.9rem;display:none}
@@ -64,7 +63,6 @@ function googleTranslateElementInit() {
     <input type="file" id="arquivo" accept="audio/*" style="display:none" onchange="enviar(this)">
   </label>
 
-  <!-- BARRA DE PROGRESSO -->
   <div class="status-text" id="statusText">Enviando...</div>
   <div class="progress-container" id="progressContainer">
     <div class="progress-bar" id="progressBar">0%</div>
@@ -85,7 +83,6 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
-// ✅ CONFIGURAÇÃO DO CLOUDINARY - VERIFIQUE SE ESTÁ CERTO!
 const CLOUD_NAME = "dlmucudnw";
 const UPLOAD_PRESET = "up-music";
 
@@ -102,20 +99,15 @@ function enviar(input){
   const formulario = new FormData();
   formulario.append("file", arquivo);
   formulario.append("upload_preset", UPLOAD_PRESET);
-  formulario.append("cloud_name", CLOUD_NAME); // ADICIONADO PARA GARANTIR
+  formulario.append("folder", "musicas");
 
-  // MOSTRA BARRA DE PROGRESSO
   document.getElementById("progressContainer").style.display = "block";
   document.getElementById("statusText").style.display = "block";
-  document.getElementById("progressBar").style.width = "0%";
-  document.getElementById("progressBar").innerText = "0%";
 
-  // USA XMLHttpRequest PARA MONITORAR O PROGRESSO
   const xhr = new XMLHttpRequest();
-  // URL FINAL DEFINITIVA
-  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
+  // ESSA URL FUNCIONA SEM API KEY!
+  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`);
 
-  // ATUALIZA A BARRA CONFORME ENVIA
   xhr.upload.onprogress = function(e){
     if(e.lengthComputable){
       const porcentagem = Math.round((e.loaded / e.total) * 100);
@@ -124,25 +116,24 @@ function enviar(input){
     }
   };
 
-  // QUANDO TERMINAR
   xhr.onload = function(){
+    document.getElementById("progressContainer").style.display = "none";
+    document.getElementById("statusText").style.display = "none";
+
     try {
       const dados = JSON.parse(xhr.responseText);
       if(xhr.status == 200 && dados.secure_url){
         salvarAudio(dados.secure_url, arquivo.name);
-        alert("✅ Áudio salvo com sucesso!");
+        alert("✅ Música enviada com sucesso!");
         input.value = "";
       } else {
-        alert("❌ Erro: " + (dados.error?.message || "Verifique Cloud Name e Preset"));
-        console.log("Dados completos:", dados);
+        alert("❌ Erro: " + (dados.error?.message || "Verifique as configurações"));
+        console.log(dados);
       }
     } catch(e){
       alert("❌ Erro na conexão!");
       console.log(e);
     }
-    // ESCONDE BARRA
-    document.getElementById("progressContainer").style.display = "none";
-    document.getElementById("statusText").style.display = "none";
   };
 
   xhr.send(formulario);
