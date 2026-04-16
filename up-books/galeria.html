@@ -6,16 +6,6 @@
 <title>Meus Livros - UP BOOKS</title>
 
 <style>
-/* ✨ ESCONDE A BARRA DO VERCEL PARA VOCÊ NÃO VER MAIS ISSO */
-#vercel-toolbar, .vercel-toolbar {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  width: 0 !important;
-  position: absolute !important;
-  top: -9999px !important;
-}
-
 /* ✨ BOTÃO TRADUTOR FORA */
 #google_translate_element {
   position: fixed;
@@ -165,14 +155,14 @@ function googleTranslateElementInit() {
     autoDisplay: true
   }, 'google_translate_element');
 
-  // Botão dentro do leitor - CARREGA DEPOIS
+  // Botão dentro do leitor
   setTimeout(function() {
     new google.translate.TranslateElement({
       pageLanguage: 'pt',
       layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
       autoDisplay: true
     }, 'google_translate_element2');
-  }, 1000);
+  }, 500);
 }
 </script>
 <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
