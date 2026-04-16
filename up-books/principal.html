@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>UP BOOKS</title>
+<title>Principal - UP BOOKS</title>
 
 <!-- ✅ GOOGLE ANALYTICS -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
@@ -17,160 +17,187 @@
 <!-- ✅ GOOGLE ADSENSE -->
 <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
 
-<script src="https://unpkg.com/epub-gen-memory@1.0.3/dist/epub-gen-memory.umd.js"></script>
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
+input, textarea{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;background:#222;color:white;font-size:1.1rem;border:1px solid #444}
+textarea{min-height:200px;resize:vertical}
 .btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
 .btn-amarelo{background:#FFD700;color:black}
-.btn-azul{background:#0074D9;color:white}
-.btn-vermelho{background:#FF4136;color:white}
 .btn-verde{background:#2ECC40;color:white}
-textarea{width:100%;height:200px;background:#111;border:1px solid #444;border-radius:10px;padding:15px;color:white;font-size:1rem;margin:10px 0}
-input[type="text"]{width:100%;padding:15px;background:#111;border:1px solid #444;border-radius:10px;color:white;margin:10px 0}
-.botoes-centro{text-align:center}
+.btn-azul{background:#0074D9;color:white}
+.botoes-centro{text-align:center;margin-top:20px}
 .ad-container{text-align:center;margin:20px 0}
 </style>
 </head>
 <body>
 
-<!-- ANUNCIO TOPO -->
-<div class="ad-container">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-2244924519509085"
-       data-ad-slot="5809111111"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</div>
-
 <div class="card">
-  <h2>📚 UP BOOKS</h2>
-  <p style="text-align:center;font-size:1.2rem">Sua biblioteca de textos e livros 📖</p>
+  <h2>📖 UP BOOKS</h2>
   <div class="botoes-centro">
-    <a href="galeria.html" class="btn btn-amarelo">📖 VER BIBLIOTECA</a>
-    <button class="btn" style="background:#333;color:white" onclick="sair()">🚪 SAIR</button>
+    <a href="galeria.html" class="btn btn-amarelo">📚 VER LIVROS</a>
+    <a href="index.html" class="btn btn-azul">🚪 SAIR</a>
   </div>
 </div>
 
-<!-- ANUNCIO MEIO -->
-<div class="ad-container">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-2244924519509085"
-       data-ad-slot="5809111111"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-</div>
-
-<!-- CARD DE CRIAÇÃO DE LIVRO -->
-<div class="card" id="areaUpload">
-  <h2>📝 CRIAR NOVO LIVRO</h2>
+<div class="card" id="areaAdmin">
+  <h2>✍️ CRIAR NOVO LIVRO</h2>
   
   <input type="text" id="titulo" placeholder="Título do Livro">
   <input type="text" id="autor" placeholder="Nome do Autor">
-  
-  <textarea id="conteudo" placeholder="Cole ou digite seu texto aqui..."></textarea>
-  
-  <div class="botoes-centro">
-    <button class="btn btn-verde" onclick="gerarEbook()">📘 GERAR EPUB</button>
-    <button class="btn btn-azul" onclick="baixarTXT()">📄 BAIXAR TXT</button>
-  </div>
-</div>
+  <textarea id="texto" placeholder="Escreva o conteúdo do livro aqui..."></textarea>
 
-<!-- ANUNCIO FINAL -->
-<div class="ad-container">
-  <ins class="adsbygoogle"
-       style="display:block"
-       data-ad-client="ca-pub-2244924519509085"
-       data-ad-slot="5809111111"
-       data-ad-format="auto"
-       data-full-width-responsive="true"></ins>
-  <script>
-       (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
+  <div class="botoes-centro">
+    <button class="btn btn-verde" onclick="gerarEpub()">📘 GERAR EPUB</button>
+    <button class="btn btn-azul" onclick="gerarTxt()">📄 GERAR TXT</button>
+    <button class="btn btn-amarelo" onclick="salvarLivro()">💾 SALVAR LIVRO</button>
+  </div>
 </div>
 
 <script>
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-window.onload = function(){
-  if(!ehAdmin){
-    document.getElementById("areaUpload").style.display = "none";
-  }
-};
+if(!ehAdmin){
+  document.getElementById("areaAdmin").style.display = "none";
+}
 
-function gerarEbook(){
-  const titulo = document.getElementById("titulo").value || "Livro Sem Nome";
+// Função para criar EPUB válido usando JSZip
+function gerarEpub() {
+  const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
-  const conteudo = document.getElementById("conteudo").value;
+  const texto = document.getElementById("texto").value;
 
-  if(!conteudo){
-    alert("⚠️ Digite algum texto primeiro!");
+  if (!texto) {
+    alert("Escreva algum texto primeiro!");
     return;
   }
 
-  const opt = {
-    title: titulo,
-    author: autor,
-    content: [
-      { title: "Conteúdo", data: conteudo }
-    ]
-  };
+  // Carrega a biblioteca JSZip dinamicamente
+  if (!window.JSZip) {
+    const script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+    script.onload = () => criarEpub(titulo, autor, texto);
+    document.head.appendChild(script);
+  } else {
+    criarEpub(titulo, autor, texto);
+  }
+}
 
-  EpubGen(opt).then(buffer => {
-    const blob = new Blob([buffer], {type: "application/epub+zip"});
-    const url = URL.createObjectURL(blob);
-    
-    salvarLivro(titulo, autor, url, conteudo);
-    alert("✅ EPUB Gerado e Salvo na Biblioteca!");
+function criarEpub(titulo, autor, texto) {
+  const zip = new JSZip();
+
+  // Estrutura básica de um arquivo EPUB
+  zip.file("mimetype", "application/epub+zip");
+  
+  const metaInf = zip.folder("META-INF");
+  metaInf.file("container.xml", `<?xml version="1.0" encoding="UTF-8"?>
+<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
+  <rootfiles>
+    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
+  </rootfiles>
+</container>`);
+
+  const oebps = zip.folder("OEBPS");
+  
+  // Arquivo de conteúdo
+  const conteudoHtml = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>${titulo}</title>
+</head>
+<body>
+  <h1>${titulo}</h1>
+  <h2>Por ${autor}</h2>
+  <div>${texto.replace(/\n/g, "<br/><br/>")}</div>
+</body>
+</html>`;
+
+  oebps.file("index.html", conteudoHtml);
+
+  // Arquivo de configuração
+  oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="uid">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
+    <dc:title>${titulo}</dc:title>
+    <dc:creator>${autor}</dc:creator>
+    <dc:language>pt</dc:language>
+    <dc:identifier id="uid">urn:uuid:12345678-1234-5678-1234-567812345678</dc:identifier>
+  </metadata>
+  <manifest>
+    <item id="index" href="index.html" media-type="application/xhtml+xml"/>
+  </manifest>
+  <spine>
+    <itemref idref="index"/>
+  </spine>
+</package>`);
+
+  // Gerar o arquivo .epub
+  zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(function(content) {
+    const url = URL.createObjectURL(content);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = titulo + ".epub";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert("✅ EPUB baixado com sucesso!");
   });
 }
 
-function baixarTXT(){
-  const titulo = document.getElementById("titulo").value || "livro";
-  const conteudo = document.getElementById("conteudo").value;
+function gerarTxt(){
+  const titulo = document.getElementById("titulo").value || "Livro";
+  const autor = document.getElementById("autor").value || "Desconhecido";
+  const texto = document.getElementById("texto").value;
 
-  if(!conteudo){
-    alert("⚠️ Digite algum texto primeiro!");
+  if(!texto){
+    alert("Escreva algum texto primeiro!");
     return;
   }
 
-  const blob = new Blob([conteudo], {type: "text/plain"});
+  const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
+  const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = titulo.replace(/[^a-z0-9]/gi, "_") + ".txt";
+  a.download = titulo + ".txt";
+  document.body.appendChild(a);
   a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
 
-  salvarLivro(titulo, document.getElementById("autor").value, null, conteudo);
+  alert("✅ TXT baixado com sucesso!");
 }
 
-function salvarLivro(titulo, autor, urlEpub, texto){
-  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
-  livros.push({
+function salvarLivro(){
+  const titulo = document.getElementById("titulo").value;
+  const autor = document.getElementById("autor").value;
+  const texto = document.getElementById("texto").value;
+
+  if(!titulo || !texto){
+    alert("Preencha título e texto!");
+    return;
+  }
+
+  const livro = {
     id: Date.now(),
     titulo: titulo,
     autor: autor,
-    urlEpub: urlEpub,
     texto: texto
-  });
-  localStorage.setItem("lista_livros", JSON.stringify(livros));
-}
+  };
 
-function sair(){
-  localStorage.removeItem("upbooks_user");
-  window.location.href="index.html";
+  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  livros.push(livro);
+  localStorage.setItem("lista_livros", JSON.stringify(livros));
+
+  alert("✅ Livro salvo com sucesso!");
+  document.getElementById("titulo").value = "";
+  document.getElementById("autor").value = "";
+  document.getElementById("texto").value = "";
 }
 </script>
 
