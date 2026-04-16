@@ -32,7 +32,7 @@ function googleTranslateElementInit() {
 }
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
-.card{background:rgba(0,0,0.5;border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
+.card{background:rgba(0,0,0,0.5);border:2px solid #FFD700;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 
 /* ✨ ESTILO DA BARRINHA DO LIVRO */
@@ -154,37 +154,42 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
+// ✅ FUNÇÃO PARA CARREGAR TUDO
 function exibirLivros(){
   const dados = localStorage.getItem("meus_livros");
   const container = document.getElementById("lista-livros");
 
-  if(!dados){
-    container.innerHTML = "<p style='text-align:center;'>Nenhum livro salvo ainda.</p>";
+  if(!dados || dados == "[]"){
+    container.innerHTML = "<p style='text-align:center; color:#ffaaaa;'>📭 Nenhum livro encontrado. Crie um novo!</p>";
     return;
   }
 
-  const livros = JSON.parse(dados);
-  container.innerHTML = "";
+  try {
+    const livros = JSON.parse(dados);
+    container.innerHTML = "";
 
-  livros.forEach((livro, index) => {
-    const div = document.createElement("div");
-    div.className = "livro-item";
-    div.onclick = function() { abrirLeitura(livro); };
-    
-    div.innerHTML = `
-      <span class="livro-numero">${index + 1}.</span>
-      <span class="livro-titulo">${livro.titulo}</span>
-      <div class="autor">por ${livro.autor || 'Desconhecido'}</div>
-    `;
-    
-    container.appendChild(div);
-  });
+    livros.forEach((livro, index) => {
+      const div = document.createElement("div");
+      div.className = "livro-item";
+      div.onclick = function() { abrirLeitura(livro); };
+      
+      div.innerHTML = `
+        <span class="livro-numero">${index + 1}.</span>
+        <span class="livro-titulo">${livro.titulo || 'Sem Título'}</span>
+        <div class="autor">por ${livro.autor || 'Desconhecido'}</div>
+      `;
+      
+      container.appendChild(div);
+    });
+  } catch(e) {
+    container.innerHTML = "<p style='color:red;'>Erro ao carregar livros.</p>";
+  }
 }
 
 function abrirLeitura(livro){
-  document.getElementById("tituloLivro").innerText = livro.titulo;
+  document.getElementById("tituloLivro").innerText = livro.titulo || "Livro";
   document.getElementById("autorLivro").innerText = "Por " + (livro.autor || 'Desconhecido');
-  document.getElementById("textoLivro").innerText = livro.texto;
+  document.getElementById("textoLivro").innerText = livro.texto || "Sem conteúdo";
   document.getElementById("paginaLeitura").style.display = "block";
   window.scrollTo(0,0);
 }
