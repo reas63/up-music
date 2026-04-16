@@ -3,59 +3,30 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login - UP MUSIC</title>
+<title>UP MUSIC</title>
+
+<!-- ✅ CÓDIGO DO ADSENSE -->
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085"
+     crossorigin="anonymous"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white;display:flex;align-items:center;justify-content:center}
-.card{background:rgba(0,0,0,0.7);border:2px solid #FFDC00;border-radius:20px;padding:30px;margin:15px auto;width:100%;max-width:500px;text-align:center}
-h2{color:#FFDC00;margin-bottom:30px;font-size:2.2rem}
-p{margin-bottom:25px;font-size:1.1rem;opacity:0.9}
-.btn{padding:18px 30px;border:none;border-radius:12px;font-weight:bold;cursor:pointer;margin:10px auto;font-size:1.2rem;width:90%;max-width:350px}
-.btn-admin{background:linear-gradient(45deg,#FF4136,#FF851B);color:white}
-.btn-visita{background:linear-gradient(45deg,#0074D9,#39CCCC);color:white}
-.senha-area{margin:20px 0;display:none}
-input{width:90%;padding:15px;font-size:1.2rem;border-radius:10px;border:none;text-align:center;margin-bottom:15px}
+body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;font-family:Arial,sans-serif;color:white;padding:20px}
+.container{max-width:400px;margin:auto;background:rgba(0,0,0,0.5);padding:30px;border-radius:20px;border:2px solid #FFD700;text-align:center}
+h1{color:#FFD700;margin-bottom:30px;font-size:2.5rem}
+.btn{display:block;width:100%;padding:20px;margin:15px 0;background:#FFD700;color:#1a2a6c;border:none;border-radius:15px;font-size:1.3rem;font-weight:bold;cursor:pointer;transition:all 0.3s;text-decoration:none}
+.btn:hover{transform:scale(1.05);box-shadow:0 0 20px #FFD700}
 </style>
 </head>
 <body>
 
-<div class="card">
-  <h2>🎵 UP MUSIC</h2>
-  <p>Escolha como deseja entrar:</p>
-
-  <button class="btn btn-admin" onclick="mostrarSenha()">🔐 ENTRAR COMO ADMINISTRADOR</button>
-
-  <div class="senha-area" id="areaSenha">
-    <input type="password" id="senha" placeholder="Digite a senha de admin">
-    <button class="btn btn-admin" onclick="entrarAdmin()">✅ CONFIRMAR</button>
-  </div>
-
-  <hr style="border:1px solid #555;margin:25px 0">
-
-  <button class="btn btn-visita" onclick="entrarVisitante()">👤 ENTRAR COMO VISITANTE</button>
+<div class="container">
+  <h1>🎵 UP MUSIC</h1>
+  <a href="musica.html" class="btn">▶️ OUVIR MÚSICAS</a>
+  <a href="video.html" class="btn">📹 VER VÍDEOS</a>
+  <a href="radio.html" class="btn">📻 RÁDIO AO VIVO</a>
+  <a href="galeria.html" class="btn">📚 LER LIVROS</a>
 </div>
-
-<script>
-function mostrarSenha(){
-  document.getElementById("areaSenha").style.display = "block";
-}
-
-function entrarAdmin(){
-  const senha = document.getElementById("senha").value;
-  // SENHA CORRIGIDA
-  if(senha === "S46c!B!poW-5"){
-    localStorage.setItem("upmusic_user", "admin");
-    window.location.href="principal.html";
-  } else {
-    alert("❌ Senha incorreta! Tente novamente.");
-  }
-}
-
-function entrarVisitante(){
-  localStorage.setItem("upmusic_user", "visitante");
-  window.location.href="principal.html";
-}
-</script>
 
 </body>
 </html>
