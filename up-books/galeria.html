@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Galeria - UP BOOKS</title>
+<title>Meus Livros - UP BOOKS</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
@@ -20,7 +20,7 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <body>
 
 <div class="card">
-  <h2>📚 GALERIA DE LIVROS</h2>
+  <h2>📚 MEUS LIVROS</h2>
   <div class="botoes-centro">
     <a href="./principal.html" class="btn btn-azul">🔙 VOLTAR</a>
   </div>
@@ -33,28 +33,20 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-// 🔥 FUNÇÃO FORÇADA PARA CARREGAR TUDO
+// 🔥 CARREGA TUDO NA HORA
 function exibirLivros(){
-  console.log("Carregando livros...");
   const dados = localStorage.getItem("lista_livros");
-  console.log("Dados brutos:", dados);
   
-  let livros = [];
-  if(dados){
-    livros = JSON.parse(dados);
-  }
-
-  const container = document.getElementById("lista-livros");
-
-  if(livros.length == 0){
-    container.innerHTML = "<div class='card'><p style='text-align:center; font-size:1.2rem;'>Nenhum livro cadastrado ainda.</p></div>";
+  if(!dados){
+    document.getElementById("lista-livros").innerHTML = "<div class='card'><p style='text-align:center;'>Nenhum livro salvo ainda.</p></div>";
     return;
   }
 
+  const livros = JSON.parse(dados);
+  const container = document.getElementById("lista-livros");
   container.innerHTML = "";
 
   livros.forEach(livro => {
-    console.log("Mostrando:", livro.titulo);
     const div = document.createElement("div");
     div.className = "card";
     div.innerHTML = `
@@ -109,17 +101,14 @@ function baixarTxt(titulo, autor, texto){
 }
 
 function deletarLivro(id){
-  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  let livros = JSON.parse(localStorage.getItem("lista_livros"));
   livros = livros.filter(l => l.id != id);
   localStorage.setItem("lista_livros", JSON.stringify(livros));
   exibirLivros();
 }
 
-// Carregar assim que abrir a página
-window.onload = function(){
-  console.log("Página carregada!");
-  exibirLivros();
-}
+// Executa assim que abrir
+window.onload = exibirLivros;
 </script>
 
 </body>

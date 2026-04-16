@@ -23,7 +23,7 @@ textarea{min-height:200px;resize:vertical}
 <div class="card">
   <h2>📖 UP BOOKS</h2>
   <div class="botoes-centro">
-    <a href="./galeria.html" class="btn btn-amarelo">📚 VER LIVROS</a>
+    <a href="./galeria.html" class="btn btn-amarelo">📚 MEUS LIVROS</a>
     <a href="./index.html" class="btn btn-azul">🚪 SAIR</a>
   </div>
 </div>
@@ -96,15 +96,14 @@ function gerarTxt(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-// 🔥 FUNÇÃO CORRIGIDA PARA SALVAR
+// 🔥 SALVAMENTO FORÇADO
 function salvarLivro(){
   const titulo = document.getElementById("titulo").value;
   const autor = document.getElementById("autor").value;
   const texto = document.getElementById("texto").value;
 
-  if(!titulo || !texto){ alert("Preencha tudo!"); return; }
+  if(!titulo || !texto){ alert("Preencha título e texto!"); return; }
 
-  // Cria o objeto livro
   const livro = {
     id: Date.now(),
     titulo: titulo,
@@ -112,14 +111,19 @@ function salvarLivro(){
     texto: texto
   };
 
-  // Pega o que já tem e adiciona o novo
-  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  // Pega a lista atual ou cria uma nova
+  let livros = [];
+  if(localStorage.getItem("lista_livros")){
+    livros = JSON.parse(localStorage.getItem("lista_livros"));
+  }
+
+  // Adiciona o novo
   livros.push(livro);
-  
-  // Salva de forma FORÇADA
+
+  // Salva de volta
   localStorage.setItem("lista_livros", JSON.stringify(livros));
 
-  alert("✅ LIVRO SALVO! AGORA VAI APARECER NA GALERIA!");
+  alert("✅ LIVRO SALVO COM SUCESSO!");
   
   // Limpa os campos
   document.getElementById("titulo").value = "";
