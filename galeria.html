@@ -4,6 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galeria - UP MUSIC</title>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white}
@@ -15,9 +18,20 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 .audio-item p{margin-bottom:10px;font-weight:bold}
 audio{width:100%;margin-top:5px}
 .vazio{text-align:center;padding:30px;color:#aaa;font-style:italic}
+#google_translate_element{text-align:center;margin:10px 0}
+.goog-te-gadget-simple{background:white !important;border:1px solid #ccc !important;border-radius:20px !important;padding:6px 15px !important;display:inline-flex !important;align-items:center !important}
+.goog-te-gadget-icon{background:url(https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/translate/default/24px.svg) center center no-repeat !important;width:24px !important;height:24px !important;margin-right:8px !important}
+.goog-te-menu-value{color:black !important;font-size:14px !important}
 </style>
 </head>
 <body>
+
+<div id="google_translate_element"></div>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: "pt", includedLanguages: "en,es,fr,de,it,ru,zh-CN,ja,ko", layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, "google_translate_element");
+}
+</script>
 
 <div class="card">
   <h2>🎶 GALERIA DE MÚSICAS</h2>
@@ -52,7 +66,7 @@ function carregarAudios(){
     div.innerHTML = `
       <p>🎵 ${audio.nome || "Música sem nome"}</p>
       <audio controls>
-        <source src="${audio.url}" type="audio/mpeg">
+        <source src="${audio.url}">
         Seu navegador não suporta áudio.
       
     `;
