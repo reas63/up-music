@@ -33,17 +33,16 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
-// 🔥 CARREGA TUDO NA HORA
+// 🔥 CARREGA TUDO QUE ESTÁ SALVO
 function exibirLivros(){
-  const dados = localStorage.getItem("lista_livros");
-  
-  if(!dados){
-    document.getElementById("lista-livros").innerHTML = "<div class='card'><p style='text-align:center;'>Nenhum livro salvo ainda.</p></div>";
+  const livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+  const container = document.getElementById("lista-livros");
+
+  if(livros.length == 0){
+    container.innerHTML = "<div class='card'><p style='text-align:center;'>Nenhum livro salvo ainda.</p></div>";
     return;
   }
 
-  const livros = JSON.parse(dados);
-  const container = document.getElementById("lista-livros");
   container.innerHTML = "";
 
   livros.forEach(livro => {
@@ -101,13 +100,12 @@ function baixarTxt(titulo, autor, texto){
 }
 
 function deletarLivro(id){
-  let livros = JSON.parse(localStorage.getItem("lista_livros"));
+  let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
   livros = livros.filter(l => l.id != id);
   localStorage.setItem("lista_livros", JSON.stringify(livros));
   exibirLivros();
 }
 
-// Executa assim que abrir
 window.onload = exibirLivros;
 </script>
 

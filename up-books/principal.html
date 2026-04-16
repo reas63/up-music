@@ -11,7 +11,7 @@ body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh
 h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 input, textarea{width:100%;padding:15px;margin:10px 0;border:none;border-radius:10px;background:#222;color:white;font-size:1.1rem;border:1px solid #444}
 textarea{min-height:200px;resize:vertical}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
+.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursorpointer;margin:5px;font-size:1.1rem;text-decoration:none;display:inline-block}
 .btn-amarelo{background:#FFD700;color:black}
 .btn-verde{background:#2ECC40;color:white}
 .btn-azul{background:#0074D9;color:white}
@@ -96,39 +96,55 @@ function gerarTxt(){
   document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
-// 🔥 SALVAMENTO FORÇADO
-function salvarLivro(){
+// 🔥 SALVA DIRETO NA NUVEM
+async function salvarLivro(){
   const titulo = document.getElementById("titulo").value;
   const autor = document.getElementById("autor").value;
   const texto = document.getElementById("texto").value;
 
-  if(!titulo || !texto){ alert("Preencha título e texto!"); return; }
+  if(!titulo || !texto){ alert("Preencha tudo!"); return; }
 
-  const livro = {
-    id: Date.now(),
-    titulo: titulo,
-    autor: autor,
-    texto: texto
-  };
+  // Cria o conteúdo
+  const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
+  const blob = new Blob([conteudo], {type: "text/plain"});
+  const arquivo = new File([blob], "livro.txt", {type: "text/plain"});
 
-  // Pega a lista atual ou cria uma nova
-  let livros = [];
-  if(localStorage.getItem("lista_livros")){
-    livros = JSON.parse(localStorage.getItem("lista_livros"));
+  const formData = new FormData();
+  formData.append("file", arquivo);
+  formData.append("upload_preset", "ml_default");
+  formData.append("folder", "upbooks");
+
+  try {
+    const response = await fetch("https://api.cloudinary.com/v1_1/dzqejqgok/upload", {
+      method: "POST",
+      body: formData
+    });
+
+    const data = await response.json();
+
+    if(data.secure_url){
+      // Salva o link e os dados
+      const livro = {
+        id: Date.now(),
+        titulo: titulo,
+        autor: autor,
+        texto: texto,
+        url: data.secure_url
+      };
+
+      let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
+      livros.push(livro);
+      localStorage.setItem("lista_livros", JSON.stringify(livros));
+
+      alert("✅ SALVO NA NUVEM! VAI APARECER NA LISTA!");
+      document.getElementById("titulo").value = "";
+      document.getElementById("autor").value = "";
+      document.getElementById("texto").value = "";
+    }
+  } catch(err){
+    alert("Erro ao salvar!");
+    console.log(err);
   }
-
-  // Adiciona o novo
-  livros.push(livro);
-
-  // Salva de volta
-  localStorage.setItem("lista_livros", JSON.stringify(livros));
-
-  alert("✅ LIVRO SALVO COM SUCESSO!");
-  
-  // Limpa os campos
-  document.getElementById("titulo").value = "";
-  document.getElementById("autor").value = "";
-  document.getElementById("texto").value = "";
 }
 </script>
 
