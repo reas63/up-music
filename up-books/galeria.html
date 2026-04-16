@@ -5,11 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Meus Livros - UP BOOKS</title>
 
-<!-- 🌐 BOTÃO GOOGLE TRADUTOR -->
-<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 <style>
-/* ✨ ESTILO PARA FICAR IGUAL A FOTO */
+/* ✨ BOTÃO TRADUTOR IGUAL A FOTO */
 #google_translate_element {
   position: fixed;
   top: 10px;
@@ -17,20 +14,26 @@
   z-index: 9999;
 }
 
-#google_translate_element .goog-te-gadget-simple {
+/* ✨ BOTÃO DENTRO DO LEITOR TAMBÉM */
+#google_translate_element_leitor {
+  text-align: right;
+  margin-bottom: 15px;
+}
+
+.goog-te-gadget-simple {
   background-color: #ffffff !important;
-  border: 1px solid #cccccc !important;
+  border: 1px solid #dddddd !important;
   border-radius: 25px !important;
-  padding: 8px 15px !important;
+  padding: 8px 16px !important;
   font-family: Arial, sans-serif !important;
   font-size: 16px !important;
   color: #000000 !important;
-  display: flex !important;
+  display: inline-flex !important;
   align-items: center !important;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1) !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1) !important;
 }
 
-#google_translate_element .goog-te-gadget-icon {
+.goog-te-gadget-icon {
   display: inline-block !important;
   width: 24px !important;
   height: 24px !important;
@@ -132,9 +135,13 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
   margin-top: 20px;
 }
 </style>
+
+<!-- 🌐 SCRIPT DO GOOGLE TRADUTOR -->
+<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 </head>
 <body>
 
+<!-- BOTÃO FORA DA TELA -->
 <div id="google_translate_element"></div>
 
 <div class="card">
@@ -149,6 +156,10 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 <!-- ✨ PÁGINA DE LEITURA ESCONDIDA -->
 <div id="paginaLeitura" class="pagina-leitura">
   <div class="conteudo-leitura">
+    
+    <!-- ✅ BOTÃO DE TRADUZIR DENTRO DO LEITOR -->
+    <div id="google_translate_element_leitor"></div>
+
     <button class="btn-fechar" onclick="fecharLeitura()">✖️ FECHAR</button>
     <h1 id="tituloLivro" style="color:#FFD700; text-align:center;"></h1>
     <h3 id="autorLivro" style="color:#aaa; text-align:center; margin-bottom:20px;"></h3>
@@ -158,17 +169,27 @@ h2{color:#FFD700;text-align:center;margin-bottom:20px;font-size:2rem}
 </div>
 
 <script>
+// ✅ INICIALIZA O TRADUTOR NOS DOIS LUGARES
 function googleTranslateElementInit() {
+  // Botão principal
   new google.translate.TranslateElement({
     pageLanguage: 'pt',
     layout: google.translate.TranslateElement.FloatPosition.TOP_RIGHT,
     autoDisplay: true
   }, 'google_translate_element');
+
+  // Botão dentro do leitor
+  new google.translate.TranslateElement({
+    pageLanguage: 'pt',
+    layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
+    autoDisplay: true
+  }, 'google_translate_element_leitor');
 }
 
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
 
+// ✅ CARREGA A LISTA DE LIVROS
 function exibirLivros(){
   const dados = localStorage.getItem("meus_livros");
   const container = document.getElementById("lista-livros");
@@ -200,23 +221,17 @@ function exibirLivros(){
   }
 }
 
+// ✅ ABRE O LIVRO PARA LER
 function abrirLeitura(livro){
   document.getElementById("tituloLivro").innerText = livro.titulo || "Livro";
   document.getElementById("autorLivro").innerText = "Por " + (livro.autor || 'Desconhecido');
-  
-  // ✅ GARANTE QUE O TEXTO VAI SER TRADUZIDO
-  const elementoTexto = document.getElementById("textoLivro");
-  elementoTexto.innerText = livro.texto || "Sem conteúdo";
-  
-  // 🔄 FORÇA O GOOGLE TRADUTOR VERIFICAR NOVO CONTEÚDO
-  if(window.google && google.translate) {
-    google.translate.TranslateElement.refresh();
-  }
+  document.getElementById("textoLivro").innerText = livro.texto || "Sem conteúdo";
   
   document.getElementById("paginaLeitura").style.display = "block";
   window.scrollTo(0,0);
 }
 
+// ✅ FECHA O LIVRO
 function fecharLeitura(){
   document.getElementById("paginaLeitura").style.display = "none";
 }
