@@ -33,6 +33,11 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 .goog-te-gadget-simple{background:white !important;border:1px solid #ccc !important;border-radius:20px !important;padding:6px 15px !important;display:inline-flex !important;align-items:center !important}
 .goog-te-gadget-icon{background:url(https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/translate/default/24px.svg) center center no-repeat !important;width:24px !important;height:24px !important;margin-right:8px !important}
 .goog-te-menu-value{color:black !important;font-size:14px !important}
+
+/* ESTILO DA BARRA DE PROGRESSO */
+.progress-container{width:100%;height:20px;background:#333;border-radius:10px;margin:10px 0;overflow:hidden;display:none}
+.progress-bar{height:100%;background:linear-gradient(90deg,#00c851,#FFDC00);width:0%;transition:width 0.3s ease;text-align:center;line-height:20px;font-weight:bold;color:black}
+.status-text{text-align:center;margin:5px 0;font-size:0.9rem;display:none}
 </style>
 </head>
 <body>
@@ -48,7 +53,7 @@ function googleTranslateElementInit() {
   <h2>🎵 UP MUSIC</h2>
   <p style="text-align:center">Sua galeria de sons e músicas 🎧</p>
   <div class="botoes-centro">
-    <button class="btn btn-amarelo" onclick="window.location.href="galeria.html"">🎶 VER GALERIA</button>
+    <button class="btn btn-amarelo" onclick="window.location.href=galeria.html">🎶 VER GALERIA</button>
     <button class="btn" style="background:#333;color:white" onclick="sair()">🚪 SAIR</button>
   </div>
 </div>
@@ -58,6 +63,12 @@ function googleTranslateElementInit() {
     🎤 ENVIAR ÁUDIO (MP3)
     <input type="file" id="arquivo" accept="audio/mp3,audio/wav" style="display:none" onchange="enviar(this)">
   </label>
+
+  <!-- BARRA DE PROGRESSO -->
+  <div class="status-text" id="statusText">Enviando...</div>
+  <div class="progress-container" id="progressContainer">
+    <div class="progress-bar" id="progressBar">0%</div>
+  </div>
 </div>
 
 <div class="card">
@@ -74,7 +85,7 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
-// ✅ CONFIGURAÇÃO DO CLOUDINARY - TUDO CERTO!
+// ✅ CONFIGURAÇÃO DO CLOUDINARY
 const CLOUD_NAME = "dlmucudnw";
 const UPLOAD_PRESET = "up-music";
 
@@ -92,23 +103,48 @@ function enviar(input){
   formulario.append("file", arquivo);
   formulario.append("upload_preset", UPLOAD_PRESET);
 
-  fetch(`https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`, {
-    method: "POST",
-    body: formulario
-  })
-  .then(resposta => resposta.json())
-  .then(dados => {
-    if(dados.secure_url){
-      salvarAudio(dados.secure_url);
-      alert("✅ Áudio salvo com sucesso!");
-      input.value = "";
+  // MOSTRA BARRA DE PROGRESSO
+  document.getElementById("progressContainer").style.display = "block";
+  document.getElementById("statusText").style.display = "block";
+  document.getElementById("progressBar").style.width = "0%";
+  document.getElementById("progressBar").innerText = "0%";
+
+  // USA XMLHttpRequest PARA MONITORAR O PROGRESSO
+  const xhr = new XMLHttpRequest();
+  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`);
+
+  // ATUALIZA A BARRA CONFORME ENVIA
+  xhr.upload.onprogress = function(e){
+    if(e.lengthComputable){
+      const porcentagem = Math.round((e.loaded / e.total) * 100);
+      document.getElementById("progressBar").style.width = porcentagem + "%";
+      document.getElementById("progressBar").innerText = porcentagem + "%";
     }
-  });
+  };
+
+  // QUANDO TERMINAR
+  xhr.onload = function(){
+    if(xhr.status == 200){
+      const dados = JSON.parse(xhr.responseText);
+      if(dados.secure_url){
+        salvarAudio(dados.secure_url, arquivo.name);
+        alert("✅ Áudio salvo com sucesso!");
+        input.value = "";
+      }
+    }else{
+      alert("❌ Erro ao enviar! Tente novamente.");
+    }
+    // ESCONDE BARRA
+    document.getElementById("progressContainer").style.display = "none";
+    document.getElementById("statusText").style.display = "none";
+  };
+
+  xhr.send(formulario);
 }
 
-function salvarAudio(url){
+function salvarAudio(url, nome){
   let audios = JSON.parse(localStorage.getItem("lista_audios") || "[]");
-  audios.push({url: url, id: Date.now()});
+  audios.push({url: url, nome: nome, id: Date.now()});
   localStorage.setItem("lista_audios", JSON.stringify(audios));
 }
 
