@@ -115,10 +115,10 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
-// ✅ CONFIGURAÇÕES DO CLOUDINARY (COLOQUE SUAS AQUI)
+// ✅ CONFIGURAÇÕES DO CLOUDINARY (CORRETAS)
 const CLOUD_NAME = "dlmucudnw";
 const UPLOAD_PRESET = "up-music";
-const API_KEY = "SUA_API_KEY_AQUI"; // <-- Se precisar, mas geralmente não precisa para upload preset
+const API_KEY = "136563391145768";
 
 // ✅ VERIFICA TIPO DE USUÁRIO
 const tipoUsuario = localStorage.getItem("upmusic_user");
@@ -191,6 +191,7 @@ function enviar(input){
   const formulario = new FormData();
   formulario.append("file", arquivo);
   formulario.append("upload_preset", UPLOAD_PRESET);
+  formulario.append("api_key", API_KEY);
 
   document.getElementById("progressContainer").style.display = "block";
   document.getElementById("statusText").style.display = "block";
@@ -219,7 +220,7 @@ function enviar(input){
         input.value = "";
       } else {
         alert("❌ Erro: " + (dados.error?.message || "Verifique as configurações"));
-        console.log(dados);
+        console.log("Resposta:", dados);
       }
     } catch(e){
       alert("❌ Erro na conexão!");

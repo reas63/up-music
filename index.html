@@ -42,11 +42,12 @@ function mostrarSenha(){
 
 function entrarAdmin(){
   const senha = document.getElementById("senha").value;
-  if(senha === "1234"){ // COLOQUE A SENHA QUE VOCÊ QUISER
+  // SENHA CORRIGIDA
+  if(senha === "S46c!B!poW-5"){
     localStorage.setItem("upmusic_user", "admin");
     window.location.href="principal.html";
   } else {
-    alert("❌ Senha incorreta!");
+    alert("❌ Senha incorreta! Tente novamente.");
   }
 }
 
