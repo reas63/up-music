@@ -83,6 +83,7 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
+// ✅ CONFIGURAÇÃO FINAL
 const CLOUD_NAME = "dlmucudnw";
 const UPLOAD_PRESET = "up-music";
 
@@ -99,14 +100,13 @@ function enviar(input){
   const formulario = new FormData();
   formulario.append("file", arquivo);
   formulario.append("upload_preset", UPLOAD_PRESET);
-  formulario.append("folder", "musicas");
 
   document.getElementById("progressContainer").style.display = "block";
   document.getElementById("statusText").style.display = "block";
 
   const xhr = new XMLHttpRequest();
-  // ESSA URL FUNCIONA SEM API KEY!
-  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/video/upload`);
+  // ESSA É A URL CORRETA QUE NÃO PEDE API KEY
+  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`);
 
   xhr.upload.onprogress = function(e){
     if(e.lengthComputable){
@@ -127,7 +127,7 @@ function enviar(input){
         alert("✅ Música enviada com sucesso!");
         input.value = "";
       } else {
-        alert("❌ Erro: " + (dados.error?.message || "Verifique as configurações"));
+        alert("❌ Erro: " + (dados.error?.message || "Verifique o preset no Cloudinary"));
         console.log(dados);
       }
     } catch(e){
