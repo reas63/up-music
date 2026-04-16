@@ -36,8 +36,8 @@ textarea{min-height:200px;resize:vertical}
   <textarea id="texto" placeholder="Escreva o conteúdo do livro aqui..."></textarea>
 
   <div class="botoes-centro">
-    <button class="btn btn-verde" onclick="gerarEpub()">📘 GERAR EPUB</button>
-    <button class="btn btn-azul" onclick="gerarTxt()">📄 GERAR TXT</button>
+    <button class="btn btn-verde" onclick="gerarEpub()">📘 BAIXAR EPUB</button>
+    <button class="btn btn-azul" onclick="gerarTxt()">📄 BAIXAR TXT</button>
     <button class="btn btn-amarelo" onclick="salvarLivro()">💾 SALVAR LIVRO</button>
   </div>
 </div>
@@ -51,6 +51,7 @@ if(!ehAdmin){
   document.getElementById("areaAdmin").style.display = "none";
 }
 
+// 🔥 FUNÇÃO PARA BAIXAR EPUB DIRETO NA PASTA DOWNLOADS
 function gerarEpub() {
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
@@ -72,7 +73,7 @@ function gerarEpub() {
   
   oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://www.idpf.org/2007/opf" version="2.0">
-  <metadata xmlns:dc="http://purl.org/dc/elements:1.1/">
+  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
     <dc:title>${titulo}</dc:title><dc:creator>${autor}</dc:creator><dc:language>pt</dc:language>
   </metadata>
   <manifest><item id="index" href="index.html" media-type="application/xhtml+xml"/></manifest>
@@ -81,28 +82,45 @@ function gerarEpub() {
 
   zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
     const url = URL.createObjectURL(content);
-    const a = document.createElement("a"); a.href = url; a.download = titulo+".epub";
-    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = titulo + ".epub"; // 🔽 BAIXA DIRETO NO SEU CELULAR/PC
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    alert("📘 Baixando EPUB...");
   });
 }
 
+// 🔥 FUNÇÃO PARA BAIXAR TXT
 function gerarTxt(){
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
   const texto = document.getElementById("texto").value;
-  const blob = new Blob([`${titulo}\nPor ${autor}\n\n${texto}`], {type: "text/plain;charset=utf-8"});
+
+  if (!texto) { alert("Escreva texto primeiro!"); return; }
+
+  const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
+  const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a"); a.href = url; a.download = titulo+".txt";
-  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = titulo + ".txt"; // 🔽 BAIXA DIRETO
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  alert("📄 Baixando TXT...");
 }
 
-// 🔥 FUNÇÃO CORRIGIDA PARA SALVAR
+// 🔥 SALVAR
 function salvarLivro(){
   const titulo = document.getElementById("titulo").value;
   const autor = document.getElementById("autor").value;
   const texto = document.getElementById("texto").value;
 
-  if(!titulo || !texto){ alert("Preencha título e texto!"); return; }
+  if(!titulo || !texto){ alert("Preencha tudo!"); return; }
 
   const livro = {
     id: Date.now(),
@@ -111,20 +129,12 @@ function salvarLivro(){
     texto: texto
   };
 
-  // PEGA O QUE TEM E ADICIONA O NOVO
-  let livros = [];
-  if(localStorage.getItem("meus_livros")){
-    livros = JSON.parse(localStorage.getItem("meus_livros"));
-  }
-
+  let livros = JSON.parse(localStorage.getItem("meus_livros") || "[]");
   livros.push(livro);
-
-  // SALVA DE VOLTA
   localStorage.setItem("meus_livros", JSON.stringify(livros));
 
-  alert("✅ LIVRO SALVO COM SUCESSO!");
-
-  // LIMPA
+  alert("✅ SALVO! VAI APARECER EM MEUS LIVROS!");
+  
   document.getElementById("titulo").value = "";
   document.getElementById("autor").value = "";
   document.getElementById("texto").value = "";
