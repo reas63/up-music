@@ -4,19 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Principal - UP BOOKS</title>
-
-<!-- ✅ GOOGLE ANALYTICS -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-B9C3PNT1X7"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag("js", new Date());
-  gtag("config", "G-B9C3PNT1X7");
-</script>
-
-<!-- ✅ GOOGLE ADSENSE -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#1a2a6c,#b21f1f,#1a2a6c);min-height:100vh;padding:20px;font-family:Arial;color:white}
@@ -29,7 +16,6 @@ textarea{min-height:200px;resize:vertical}
 .btn-verde{background:#2ECC40;color:white}
 .btn-azul{background:#0074D9;color:white}
 .botoes-centro{text-align:center;margin-top:20px}
-.ad-container{text-align:center;margin:20px 0}
 </style>
 </head>
 <body>
@@ -56,6 +42,7 @@ textarea{min-height:200px;resize:vertical}
   </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
 <script>
 const tipoUsuario = localStorage.getItem("upbooks_user");
 const ehAdmin = tipoUsuario == "admin";
@@ -64,88 +51,38 @@ if(!ehAdmin){
   document.getElementById("areaAdmin").style.display = "none";
 }
 
-// Função para criar EPUB válido usando JSZip
 function gerarEpub() {
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
   const texto = document.getElementById("texto").value;
 
-  if (!texto) {
-    alert("Escreva algum texto primeiro!");
-    return;
-  }
+  if (!texto) { alert("Escreva texto primeiro!"); return; }
 
-  // Carrega a biblioteca JSZip dinamicamente
-  if (!window.JSZip) {
-    const script = document.createElement('script');
-    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
-    script.onload = () => criarEpub(titulo, autor, texto);
-    document.head.appendChild(script);
-  } else {
-    criarEpub(titulo, autor, texto);
-  }
-}
-
-function criarEpub(titulo, autor, texto) {
   const zip = new JSZip();
-
-  // Estrutura básica de um arquivo EPUB
   zip.file("mimetype", "application/epub+zip");
   
   const metaInf = zip.folder("META-INF");
   metaInf.file("container.xml", `<?xml version="1.0" encoding="UTF-8"?>
 <container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
-  <rootfiles>
-    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
-  </rootfiles>
+  <rootfiles><rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/></rootfiles>
 </container>`);
 
   const oebps = zip.folder("OEBPS");
+  oebps.file("index.html", `<html><head><meta charset='utf-8'/></head><body><h1>${titulo}</h1><h2>Por ${autor}</h2><div>${texto.replace(/\n/g, '<br>')}</div></body></html>`);
   
-  // Arquivo de conteúdo
-  const conteudoHtml = `<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8"/>
-  <title>${titulo}</title>
-</head>
-<body>
-  <h1>${titulo}</h1>
-  <h2>Por ${autor}</h2>
-  <div>${texto.replace(/\n/g, "<br/><br/>")}</div>
-</body>
-</html>`;
-
-  oebps.file("index.html", conteudoHtml);
-
-  // Arquivo de configuração
   oebps.file("content.opf", `<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" version="2.0" unique-identifier="uid">
+<package xmlns="http://www.idpf.org/2007/opf" version="2.0">
   <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <dc:title>${titulo}</dc:title>
-    <dc:creator>${autor}</dc:creator>
-    <dc:language>pt</dc:language>
-    <dc:identifier id="uid">urn:uuid:12345678-1234-5678-1234-567812345678</dc:identifier>
+    <dc:title>${titulo}</dc:title><dc:creator>${autor}</dc:creator><dc:language>pt</dc:language>
   </metadata>
-  <manifest>
-    <item id="index" href="index.html" media-type="application/xhtml+xml"/>
-  </manifest>
-  <spine>
-    <itemref idref="index"/>
-  </spine>
+  <manifest><item id="index" href="index.html" media-type="application/xhtml+xml"/></manifest>
+  <spine><itemref idref="index"/></spine>
 </package>`);
 
-  // Gerar o arquivo .epub
-  zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(function(content) {
+  zip.generateAsync({type:"blob", mimeType:"application/epub+zip"}).then(content => {
     const url = URL.createObjectURL(content);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = titulo + ".epub";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-    alert("✅ EPUB baixado com sucesso!");
+    const a = document.createElement("a"); a.href = url; a.download = titulo+".epub";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
   });
 }
 
@@ -153,24 +90,10 @@ function gerarTxt(){
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
   const texto = document.getElementById("texto").value;
-
-  if(!texto){
-    alert("Escreva algum texto primeiro!");
-    return;
-  }
-
-  const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
-  const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
+  const blob = new Blob([`${titulo}\nPor ${autor}\n\n${texto}`], {type: "text/plain;charset=utf-8"});
   const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = titulo + ".txt";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-
-  alert("✅ TXT baixado com sucesso!");
+  const a = document.createElement("a"); a.href = url; a.download = titulo+".txt";
+  document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
 }
 
 function salvarLivro(){
@@ -178,23 +101,14 @@ function salvarLivro(){
   const autor = document.getElementById("autor").value;
   const texto = document.getElementById("texto").value;
 
-  if(!titulo || !texto){
-    alert("Preencha título e texto!");
-    return;
-  }
+  if(!titulo || !texto){ alert("Preencha tudo!"); return; }
 
-  const livro = {
-    id: Date.now(),
-    titulo: titulo,
-    autor: autor,
-    texto: texto
-  };
-
+  const livro = { id: Date.now(), titulo: titulo, autor: autor, texto: texto };
   let livros = JSON.parse(localStorage.getItem("lista_livros") || "[]");
   livros.push(livro);
   localStorage.setItem("lista_livros", JSON.stringify(livros));
 
-  alert("✅ Livro salvo com sucesso!");
+  alert("✅ LIVRO SALVO NA GALERIA!");
   document.getElementById("titulo").value = "";
   document.getElementById("autor").value = "";
   document.getElementById("texto").value = "";
