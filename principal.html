@@ -34,9 +34,7 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 .goog-te-gadget-icon{background:url(https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/translate/default/24px.svg) center center no-repeat !important;width:24px !important;height:24px !important;margin-right:8px !important}
 .goog-te-menu-value{color:black !important;font-size:14px !important}
 
-.progress-container{width:100%;height:20px;background:#333;border-radius:10px;margin:10px 0;overflow:hidden;display:none}
-.progress-bar{height:100%;background:linear-gradient(90deg,#00c851,#FFDC00);width:0%;transition:width 0.3s ease;text-align:center;line-height:20px;font-weight:bold;color:black}
-.status-text{text-align:center;margin:5px 0;font-size:0.9rem;display:none}
+.status-text{text-align:center;margin:5px 0;font-size:0.9rem}
 </style>
 </head>
 <body>
@@ -59,14 +57,11 @@ function googleTranslateElementInit() {
 
 <div class="card" id="areaUpload">
   <label class="btn-upload">
-    🎤 ENVIAR ÁUDIO
-    <input type="file" id="arquivo" accept="audio/*" style="display:none" onchange="enviar(this)">
+    🎤 SELECIONAR ÁUDIO
+    <input type="file" id="arquivo" accept="audio/*" style="display:none" onchange="prepararParaSalvar(this)">
   </label>
-
-  <div class="status-text" id="statusText">Enviando...</div>
-  <div class="progress-container" id="progressContainer">
-    <div class="progress-bar" id="progressBar">0%</div>
-  </div>
+  <p class="status-text" id="statusTexto">Arquivo selecionado: Nenhum</p>
+  <button class="btn btn-azul" onclick="salvarAudioLocal()" style="width:100%;margin-top:10px">💾 SALVAR MÚSICA</button>
 </div>
 
 <div class="card">
@@ -83,9 +78,8 @@ function googleTranslateElementInit() {
 </div>
 
 <script>
-// ✅ CONFIGURAÇÃO FINAL
-const CLOUD_NAME = "dlmucudnw";
-const UPLOAD_PRESET = "up-music";
+let arquivoSelecionado = null;
+let nomeArquivo = "";
 
 const tipoUsuario = localStorage.getItem("upmusic_user");
 const ehAdmin = tipoUsuario == "admin";
@@ -94,55 +88,39 @@ window.onload = function(){
   if(!ehAdmin) document.getElementById("areaUpload").style.display = "none";
 };
 
-function enviar(input){
+function prepararParaSalvar(input){
   if(!input.files || !input.files[0]) return;
-  const arquivo = input.files[0];
-  const formulario = new FormData();
-  formulario.append("file", arquivo);
-  formulario.append("upload_preset", UPLOAD_PRESET);
-
-  document.getElementById("progressContainer").style.display = "block";
-  document.getElementById("statusText").style.display = "block";
-
-  const xhr = new XMLHttpRequest();
-  // ESSA É A URL CORRETA QUE NÃO PEDE API KEY
-  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`);
-
-  xhr.upload.onprogress = function(e){
-    if(e.lengthComputable){
-      const porcentagem = Math.round((e.loaded / e.total) * 100);
-      document.getElementById("progressBar").style.width = porcentagem + "%";
-      document.getElementById("progressBar").innerText = porcentagem + "%";
-    }
-  };
-
-  xhr.onload = function(){
-    document.getElementById("progressContainer").style.display = "none";
-    document.getElementById("statusText").style.display = "none";
-
-    try {
-      const dados = JSON.parse(xhr.responseText);
-      if(xhr.status == 200 && dados.secure_url){
-        salvarAudio(dados.secure_url, arquivo.name);
-        alert("✅ Música enviada com sucesso!");
-        input.value = "";
-      } else {
-        alert("❌ Erro: " + (dados.error?.message || "Verifique o preset no Cloudinary"));
-        console.log(dados);
-      }
-    } catch(e){
-      alert("❌ Erro na conexão!");
-      console.log(e);
-    }
-  };
-
-  xhr.send(formulario);
+  arquivoSelecionado = input.files[0];
+  nomeArquivo = arquivoSelecionado.name;
+  document.getElementById("statusTexto").innerText = "Selecionado: " + nomeArquivo;
 }
 
-function salvarAudio(url, nome){
-  let audios = JSON.parse(localStorage.getItem("lista_audios") || "[]");
-  audios.push({url: url, nome: nome, id: Date.now()});
-  localStorage.setItem("lista_audios", JSON.stringify(audios));
+function salvarAudioLocal(){
+  if(!arquivoSelecionado){
+    alert("⚠️ Selecione um arquivo primeiro!");
+    return;
+  }
+
+  // Converte o arquivo para URL Base64 para salvar no navegador
+  const leitor = new FileReader();
+  leitor.onload = function(e){
+    const urlAudio = e.target.result;
+    
+    let audios = JSON.parse(localStorage.getItem("lista_audios") || "[]");
+    audios.push({
+      url: urlAudio,
+      nome: nomeArquivo,
+      id: Date.now()
+    });
+    
+    localStorage.setItem("lista_audios", JSON.stringify(audios));
+    alert("✅ Música salva com sucesso!");
+    document.getElementById("statusTexto").innerText = "Arquivo selecionado: Nenhum";
+    arquivoSelecionado = null;
+    document.getElementById("arquivo").value = "";
+  };
+  
+  leitor.readAsDataURL(arquivoSelecionado);
 }
 
 function sair(){
