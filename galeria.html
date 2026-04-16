@@ -4,35 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Galeria - UP MUSIC</title>
-
-<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 body{background:linear-gradient(135deg,#001f3f,#0074D9,#2ECC40);min-height:100vh;padding:20px;font-family:Arial;color:white}
 .card{background:rgba(0,0,0,0.5);border:2px solid #FFDC00;border-radius:15px;padding:20px;margin:15px auto;max-width:600px}
 h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
-.btn{padding:12px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1rem}
+.btn{padding:15px 20px;border:none;border-radius:10px;font-weight:bold;cursor:pointer;margin:5px;font-size:1.1rem}
 .btn-azul{background:#0074D9;color:white}
-.audio-item{background:#222;border:1px solid #444;border-radius:10px;padding:15px;margin:10px 0}
-.audio-item p{margin-bottom:10px;font-weight:bold;font-size:1.1rem}
+.item{background:#222;border:1px solid #444;border-radius:10px;padding:15px;margin:10px 0}
+.item p{margin-bottom:10px;font-weight:bold;font-size:1.1rem}
 audio{width:100%;height:50px;margin-top:8px}
-audio::-webkit-media-controls-panel{background:#0074D9}
-.vazio{text-align:center;padding:30px;color:#aaa;font-style:italic;font-size:1.2rem}
-#google_translate_element{text-align:center;margin:10px 0}
-.goog-te-gadget-simple{background:white !important;border:1px solid #ccc !important;border-radius:20px !important;padding:6px 15px !important;display:inline-flex !important;align-items:center !important}
-.goog-te-gadget-icon{background:url(https://fonts.gstatic.com/s/i/short-term/release/materialsymbolsoutlined/translate/default/24px.svg) center center no-repeat !important;width:24px !important;height:24px !important;margin-right:8px !important}
-.goog-te-menu-value{color:black !important;font-size:14px !important}
+.vazio{text-align:center;padding:50px;color:#aaa;font-style:italic;font-size:1.3rem}
 </style>
 </head>
 <body>
-
-<div id="google_translate_element"></div>
-<script type="text/javascript">
-function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: "pt", includedLanguages: "en,es,fr,de,it,ru,zh-CN,ja,ko", layout: google.translate.Translate.InlineLayout.SIMPLE}, "google_translate_element");
-}
-</script>
 
 <div class="card">
   <h2>🎶 GALERIA DE MÚSICAS</h2>
@@ -42,43 +27,39 @@ function googleTranslateElementInit() {
 </div>
 
 <div class="card">
-  <div id="listaAudios">
+  <div id="lista">
     <p class="vazio">🔄 CARREGANDO...</p>
   </div>
 </div>
 
 <script>
-function carregar(){
-  const listaDiv = document.getElementById("listaAudios");
-  
-  // BUSCA AS MÚSICAS
-  let musicas = JSON.parse(localStorage.getItem("minhas_musicas") || "[]");
+function carregarTudo(){
+  const divLista = document.getElementById("lista");
+  // AGORA USA O MESMO NOME: "musicas_salvas"
+  let musicas = JSON.parse(localStorage.getItem("musicas_salvas") || "[]");
 
   if(musicas.length == 0){
-    listaDiv.innerHTML = "<p class=vazio>😢 NENHUMA MÚSICA SALVA AINDA</p>";
+    divLista.innerHTML = "<p class=vazio>😢 NENHUMA MÚSICA AINDA</p>";
     return;
   }
 
-  // INVERTE A ORDEM
   musicas.reverse();
-  listaDiv.innerHTML = "";
+  divLista.innerHTML = "";
 
-  // COLOCA CADA UMA NA TELA
   musicas.forEach(m => {
     const div = document.createElement("div");
-    div.className = "audio-item";
+    div.className = "item";
     div.innerHTML = `
       <p>🎵 ${m.nome}</p>
       <audio controls>
         <source src="${m.url}">
       
     `;
-    listaDiv.appendChild(div);
+    divLista.appendChild(div);
   });
 }
 
-// EXECUTA QUANDO ABRIR
-window.onload = carregar;
+window.onload = carregarTudo;
 </script>
 
 </body>
