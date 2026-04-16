@@ -51,22 +51,13 @@ if(!ehAdmin){
   document.getElementById("areaAdmin").style.display = "none";
 }
 
-// 🔥 FUNÇÃO CORRIGIDA PARA EPUB COM TEXTO CERTO
+// 🔥 FUNÇÃO CORRIGIDA DEFINITIVA
 function gerarEpub() {
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
   const texto = document.getElementById("texto").value;
 
   if (!texto) { alert("Escreva texto primeiro!"); return; }
-
-  // 🔧 Correção: Converte caracteres especiais para HTML seguro
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
-  const textoFormatado = escapeHtml(texto).replace(/\n/g, '<br>');
 
   const zip = new JSZip();
   zip.file("mimetype", "application/epub+zip");
@@ -83,12 +74,13 @@ function gerarEpub() {
 <head>
 <meta charset="UTF-8">
 <title>${titulo}</title>
+<style>body{font-family:Arial,sans-serif;line-height:1.6;padding:20px;}</style>
 </head>
-<body style="font-family:Arial, sans-serif; line-height:1.6; padding:20px;">
+<body>
 <h1>${titulo}</h1>
 <h2>Por ${autor}</h2>
 <hr>
-<div>${textoFormatado}</div>
+<div>${texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
 </body>
 </html>`);
   
@@ -119,7 +111,6 @@ function gerarEpub() {
   });
 }
 
-// 🔥 FUNÇÃO CORRIGIDA PARA TXT
 function gerarTxt(){
   const titulo = document.getElementById("titulo").value || "Livro";
   const autor = document.getElementById("autor").value || "Desconhecido";
@@ -127,8 +118,7 @@ function gerarTxt(){
 
   if (!texto) { alert("Escreva texto primeiro!"); return; }
 
-  const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
-  const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
+  const blob = new Blob([`${titulo}\nPor ${autor}\n\n${texto}`], {type: "text/plain;charset=utf-8"});
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;

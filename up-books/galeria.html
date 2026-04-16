@@ -73,22 +73,12 @@ function exibirLivros(){
   });
 }
 
-// 🔥 FUNÇÃO CORRIGIDA COM TEXTO PERFEITO
 function baixarArquivo(botao, tipo){
   const titulo = botao.dataset.titulo;
   const autor = botao.dataset.autor;
   const texto = botao.dataset.texto;
 
-  // Função para arrumar caracteres especiais
-  function escapeHtml(text) {
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
-  }
-
   if(tipo == 'epub'){
-    const textoFormatado = escapeHtml(texto).replace(/\n/g, '<br>');
-
     const zip = new JSZip();
     zip.file("mimetype", "application/epub+zip");
     
@@ -104,12 +94,13 @@ function baixarArquivo(botao, tipo){
 <head>
 <meta charset="UTF-8">
 <title>${titulo}</title>
+<style>body{font-family:Arial,sans-serif;line-height:1.6;padding:20px;}</style>
 </head>
-<body style="font-family:Arial, sans-serif; line-height:1.6; padding:20px;">
+<body>
 <h1>${titulo}</h1>
 <h2>Por ${autor}</h2>
 <hr>
-<div>${textoFormatado}</div>
+<div>${texto.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n/g, '<br>')}</div>
 </body>
 </html>`);
     
@@ -140,8 +131,7 @@ function baixarArquivo(botao, tipo){
     });
   }
   else if(tipo == 'txt'){
-    const conteudo = `${titulo}\nPor ${autor}\n\n${texto}`;
-    const blob = new Blob([conteudo], {type: "text/plain;charset=utf-8"});
+    const blob = new Blob([`${titulo}\nPor ${autor}\n\n${texto}`], {type: "text/plain;charset=utf-8"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
