@@ -13,7 +13,7 @@
   gtag("config", "G-B9C3PNT1X7");
 </script>
 
-<script async src="https://pagead2.goiglesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2244924519509085" crossorigin="anonymous"></script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 <style>
@@ -45,7 +45,7 @@ h2{color:#FFDC00;text-align:center;margin-bottom:20px;font-size:2rem}
 <div id="google_translate_element"></div>
 <script type="text/javascript">
 function googleTranslateElementInit() {
-  new google.translate.TranslateElement({pageLanguage: "pt", includedLanguages: "en,es,fr,de,it,ru,zh-CN,ja,ko", layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, "google_translate_element");
+  new google.translate.TranslateElement({pageLanguage: "pt", includedLanguages: "en,es,fr,de,it,ru,zh-CN,ja,ko", layout: google.translate.Translate.InlineLayout.SIMPLE}, "google_translate_element");
 }
 </script>
 
@@ -60,7 +60,7 @@ function googleTranslateElementInit() {
 
 <div class="card" id="areaUpload">
   <label class="btn-upload">
-    🎤 ENVIAR ÁUDIO - TODOS OS FORMATOS
+    🎤 ENVIAR ÁUDIO
     <input type="file" id="arquivo" accept="audio/*" style="display:none" onchange="enviar(this)">
   </label>
 
@@ -111,7 +111,8 @@ function enviar(input){
 
   // USA XMLHttpRequest PARA MONITORAR O PROGRESSO
   const xhr = new XMLHttpRequest();
-  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/auto/upload`);
+  // MUDANÇA AQUI: USANDO raw/upload NOVAMENTE MAS COM CONFIGURAÇÃO CERTA
+  xhr.open("POST", `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/raw/upload`);
 
   // ATUALIZA A BARRA CONFORME ENVIA
   xhr.upload.onprogress = function(e){
@@ -124,16 +125,19 @@ function enviar(input){
 
   // QUANDO TERMINAR
   xhr.onload = function(){
-    if(xhr.status == 200){
+    try {
       const dados = JSON.parse(xhr.responseText);
-      if(dados.secure_url){
+      if(xhr.status == 200 && dados.secure_url){
         salvarAudio(dados.secure_url, arquivo.name);
         alert("✅ Áudio salvo com sucesso!");
         input.value = "";
+      } else {
+        alert("❌ Erro: " + (dados.error?.message || "Tente novamente"));
+        console.log(dados);
       }
-    }else{
-      alert("❌ Erro ao enviar! Verifique sua conexão.");
-      console.log("Resposta:", xhr.responseText);
+    } catch(e){
+      alert("❌ Erro na conexão!");
+      console.log(e);
     }
     // ESCONDE BARRA
     document.getElementById("progressContainer").style.display = "none";
